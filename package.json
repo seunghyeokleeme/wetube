@@ -1,0 +1,19 @@
+{
+  "name": "wetube",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "nodemon --exec babel-node index.js"
+  },
+  "author": "seunghyeokleeme",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.22.1",
+    "@babel/node": "^7.22.1",
+    "@babel/preset-env": "^7.22.4",
+    "nodemon": "^2.0.22"
+  }
+}
