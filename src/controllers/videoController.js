@@ -1,4 +1,4 @@
-export const trending = (req, res) => res.send("Home");
+export const trending = (req, res) => res.render("home");
 export const edit = (req, res) => res.send("Edit Video");
 export const see = (req, res) => {
   const { id } = req.params;
