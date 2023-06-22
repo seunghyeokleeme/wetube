@@ -10,6 +10,7 @@ const app = express();
 
 app.set("view engine", "pug");
 app.set("views", process.cwd() + "/src/views");
+app.set("x-powered-by", false);
 
 app.use(morgan("dev"));
 app.use("/", globalRouter);
