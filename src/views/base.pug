@@ -4,6 +4,18 @@ html(lang="ko")
         title #{pageTitle} | Devtube
         link(rel="stylesheet" href="https://unpkg.com/mvp.css")
     body 
+        header
+            if fakeUser.loggedIn
+                small 안녕하세요! #{fakeUser.username}
+            nav 
+                ul 
+                    if fakeUser.loggedIn
+                        li
+                            a(href="/logout") Log Out
+                    else
+                        li
+                            a(href="/login") Login
+            h1=pageTitle
         main
             block content
         include partials/footer.pug
