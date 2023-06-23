@@ -4,7 +4,7 @@ let videos = [
     title: "First Video",
     rating: 5,
     comments: 2,
-    createdAt: "2 minutes ago",
+    createdAt: "8년",
     views: 1,
   },
   {
@@ -12,7 +12,7 @@ let videos = [
     title: "Second Video",
     rating: 5,
     comments: 2,
-    createdAt: "2 minutes ago",
+    createdAt: "5일",
     views: 59,
   },
   {
@@ -20,7 +20,7 @@ let videos = [
     title: "Third Video",
     rating: 5,
     comments: 2,
-    createdAt: "2 minutes ago",
+    createdAt: "2분",
     views: 59,
   },
 ];
@@ -29,8 +29,20 @@ export const trending = (req, res) =>
   res.render("home", { pageTitle: "Home", videos });
 
 export const postVideo = (req, res) => {
-  // ToDo: 비디오 추가
-
+  const { title } = req.body;
+  if (typeof title !== "string") {
+    console.error(new Error("video title은 string이어야합니다!"));
+    return res.redirect("/videos/upload");
+  }
+  const newVideo = {
+    id: videos.length + 1,
+    title,
+    rating: 0,
+    comments: 0,
+    createdAt: "1분",
+    views: 0,
+  };
+  videos.push(newVideo);
   return res.redirect("/");
 };
 
@@ -58,6 +70,11 @@ export const updateVideo = (req, res) => {
   if (idx === -1) {
     console.error(new Error("video가 존재하지 않습니다."));
     return res.redirect("/");
+  }
+
+  if (typeof title !== "string") {
+    console.error(new Error("video title은 string이어야합니다!"));
+    return res.redirect(`/videos/${id}/edit`);
   }
 
   videos[idx].title = title;
