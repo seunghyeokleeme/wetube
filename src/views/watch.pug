@@ -1,4 +1,5 @@
 extends base
 
 block content
-    h1 Watch Video
+    h3 조회수 #{video.views}회
+    a(href=`./${video.id}/edit`) Edit Video &rarr;

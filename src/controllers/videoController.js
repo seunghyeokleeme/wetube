@@ -5,7 +5,7 @@ let videos = [
     rating: 5,
     comments: 2,
     createdAt: "2 minutes ago",
-    views: 59,
+    views: 1,
   },
   {
     id: 2,
@@ -26,11 +26,11 @@ let videos = [
 ];
 export const trending = (req, res) =>
   res.render("home", { pageTitle: "Home", videos });
-export const see = (req, res) => {
+export const watch = (req, res) => {
   const { id } = req.params;
-  const video = videos.find((video) => video.id === +id);
+  const video = videos.find((video) => video.id === parseInt(id, 10));
   if (video) {
-    return res.render("watch", { pageTitle: `Watching ${video.title}` });
+    return res.render("watch", { pageTitle: `Watching ${video.title}`, video });
   } else {
     return res.redirect("/");
   }
