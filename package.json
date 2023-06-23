@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "nodemon --exec babel-node ./src/server.js"
+    "dev": "nodemon --exec babel-node ./src/init.js"
   },
   "author": "seunghyeokleeme",
   "license": "MIT",
