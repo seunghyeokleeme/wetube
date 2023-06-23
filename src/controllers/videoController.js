@@ -24,8 +24,19 @@ let videos = [
     views: 59,
   },
 ];
+
 export const trending = (req, res) =>
   res.render("home", { pageTitle: "Home", videos });
+
+export const postVideo = (req, res) => {
+  // ToDo: 비디오 추가
+
+  return res.redirect("/");
+};
+
+export const getUpload = (req, res) => {
+  return res.render("upload", { pageTitle: "업로드" });
+};
 
 export const getVideo = (req, res) => {
   const { id } = req.params;
@@ -37,18 +48,23 @@ export const getVideo = (req, res) => {
   }
 };
 
-export const putVideo = (req, res) => {
-  const { id } = req.params;
+export const updateVideo = (req, res) => {
+  const {
+    params: { id },
+    body: { title },
+  } = req;
   const idx = videos.findIndex((video) => video.id === parseInt(id, 10));
-  if (idx !== -1) {
-    videos[idx].title = "수정했습니다.";
-    return res.redirect(`/videos/${id}`);
-  } else {
+
+  if (idx === -1) {
+    console.error(new Error("video가 존재하지 않습니다."));
     return res.redirect("/");
   }
+
+  videos[idx].title = title;
+  return res.redirect(`/videos/${id}`);
 };
 
-export const edit = (req, res) => {
+export const getEdit = (req, res) => {
   const { id } = req.params;
   const video = videos.find((video) => video.id === parseInt(id, 10));
   if (video) {
@@ -60,4 +76,3 @@ export const edit = (req, res) => {
 
 export const search = (req, res) => res.send("Searching by...");
 export const remove = (req, res) => res.send("해당 비디오를 삭제합니다.");
-export const upload = (req, res) => res.send("비디오 업로드 페이지입니다.");

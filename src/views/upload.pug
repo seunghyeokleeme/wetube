@@ -1,0 +1,7 @@
+extends base
+
+block content
+    h2 업로드
+    form(action=`/videos`, method="POST")
+        input(type="text", placeholder="제목", name="title", required)
+        input(type="submit", value="업로드")
