@@ -2,7 +2,7 @@ let videos = [
   {
     id: 1,
     title: "First Video",
-    rating: 5,
+    likes: 5,
     comments: 2,
     createdAt: "8년",
     views: 1,
@@ -10,7 +10,7 @@ let videos = [
   {
     id: 2,
     title: "Second Video",
-    rating: 5,
+    likes: 5,
     comments: 2,
     createdAt: "5일",
     views: 59,
@@ -18,7 +18,7 @@ let videos = [
   {
     id: 3,
     title: "Third Video",
-    rating: 5,
+    likes: 5,
     comments: 2,
     createdAt: "2분",
     views: 59,
@@ -37,7 +37,7 @@ export const postVideo = (req, res) => {
   const newVideo = {
     id: videos.length + 1,
     title,
-    rating: 0,
+    likes: 0,
     comments: 0,
     createdAt: "1분",
     views: 0,
