@@ -2,7 +2,6 @@ extends base
 include mixins/video
 
 block content
-    h2 인기 순위 영상입니다.
     each video in videos
         +video(video)
     else 

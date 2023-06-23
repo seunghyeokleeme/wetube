@@ -1,18 +1,18 @@
 import Video from "../models/Video";
 
-export const home = (req, res) => {
-  Video.find({})
-    .then((videos) => {
-      console.log("videos", videos);
-      return res.render("home", { pageTitle: "Home", videos });
-    })
-    .catch((err) => console.error(err));
+export const home = async (req, res) => {
+  try {
+    const videos = await Video.find({});
+    return res.render("home", { pageTitle: "Home", videos });
+  } catch (error) {
+    console.error(error);
+    return res.render("server-error");
+  }
 };
 
 export const postVideo = (req, res) => {
   const { title } = req.body;
   if (typeof title !== "string") {
-    console.error(new Error("video title은 string이어야합니다!"));
     return res.redirect("/videos/upload");
   }
   /*
