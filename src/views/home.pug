@@ -1,9 +1,9 @@
-extends base.pug
+extends base
+include mixins/video
 
 block content
     h2 인기 순위 영상입니다.
-    ul
-        each video in videos
-            li=video
-        else 
-            li Sorry nothing found.
+    each video in videos
+        +video(video)
+    else 
+        li Sorry nothing found.
