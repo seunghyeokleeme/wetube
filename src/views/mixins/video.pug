@@ -4,4 +4,4 @@ mixin video(video)
             a(href=`/videos/${video.id}`)=video.title
         ul 
             li #{video.createdAt} 전
-            li 조회수 #{video.views}회
+            li 조회수 #{video.meta.views}회

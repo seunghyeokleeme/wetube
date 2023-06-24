@@ -5,12 +5,12 @@ export const home = async (req, res) => {
     const videos = await Video.find({});
     return res.render("home", { pageTitle: "Home", videos });
   } catch (error) {
-    console.error(error);
+    console.error(error.message);
     return res.status(500).render("server-error");
   }
 };
 
-export const postVideo = (req, res) => {
+export const postVideo = async (req, res) => {
   const { title, description, hashtags } = req.body;
   if (
     typeof title !== "string" ||
@@ -19,34 +19,26 @@ export const postVideo = (req, res) => {
   ) {
     return res.status(400).redirect("/videos/upload");
   }
-  console.log(title, description, hashtags);
-  const video = new Video({
-    title,
-    description,
-    createdAt: Date.now(),
-    hashtags: hashtags
-      .split(",")
-      .map((word) =>
-        word.trim().startsWith("#") ? word.trim() : `#${word.trim()}`
-      ),
-    meta: {
-      views: 0,
-      likes: 0,
-    },
-  });
-  console.log(video);
-  /*
-  const newVideo = {
-    id: videos.length + 1,
-    title,
-    likes: 0,
-    comments: 0,
-    createdAt: "1분",
-    views: 0,
-  };
-  videos.push(newVideo);
-  */
-  return res.redirect("/");
+  try {
+    await Video.create({
+      title,
+      description,
+      createdAt: Date.now(),
+      hashtags: hashtags
+        .split(",")
+        .map((word) =>
+          word.trim().startsWith("#") ? word.trim() : `#${word.trim()}`
+        ),
+      meta: {
+        views: 0,
+        likes: 0,
+      },
+    });
+    return res.redirect("/");
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).render("server-error");
+  }
 };
 
 export const getUpload = (req, res) => {
