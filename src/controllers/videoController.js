@@ -6,15 +6,35 @@ export const home = async (req, res) => {
     return res.render("home", { pageTitle: "Home", videos });
   } catch (error) {
     console.error(error);
-    return res.render("server-error");
+    return res.status(500).render("server-error");
   }
 };
 
 export const postVideo = (req, res) => {
-  const { title } = req.body;
-  if (typeof title !== "string") {
-    return res.redirect("/videos/upload");
+  const { title, description, hashtags } = req.body;
+  if (
+    typeof title !== "string" ||
+    typeof description !== "string" ||
+    typeof hashtags !== "string"
+  ) {
+    return res.status(400).redirect("/videos/upload");
   }
+  console.log(title, description, hashtags);
+  const video = new Video({
+    title,
+    description,
+    createdAt: Date.now(),
+    hashtags: hashtags
+      .split(",")
+      .map((word) =>
+        word.trim().startsWith("#") ? word.trim() : `#${word.trim()}`
+      ),
+    meta: {
+      views: 0,
+      likes: 0,
+    },
+  });
+  console.log(video);
   /*
   const newVideo = {
     id: videos.length + 1,

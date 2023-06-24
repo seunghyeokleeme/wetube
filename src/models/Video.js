@@ -9,7 +9,6 @@ const videoSchema = new mongoose.Schema({
     views: Number,
     likes: Number,
   },
-  comments: Number,
 });
 
 const Video = mongoose.model("Video", videoSchema);
