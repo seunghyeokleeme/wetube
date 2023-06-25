@@ -1,12 +1,14 @@
-import Video from "../models/Video";
+import { VideoService } from "../services";
 
 export const home = async (req, res) => {
   try {
-    const videos = await Video.find({});
+    const videos = await VideoService.findAll();
     return res.render("home", { pageTitle: "Home", videos });
   } catch (error) {
     console.error(error.message);
-    return res.status(500).render("server-error");
+    return res.status(500).json({
+      error: "서버 내부 오류가 발생했습니다.",
+    });
   }
 };
 
@@ -17,27 +19,19 @@ export const postVideo = async (req, res) => {
     typeof description !== "string" ||
     typeof hashtags !== "string"
   ) {
-    return res.status(400).redirect("/videos/upload");
+    return res.status(400).json({
+      error:
+        "유효하지 않는 데이터, title, description, hashtags는 string 타입 이어야합니다.",
+    });
   }
   try {
-    await Video.create({
-      title,
-      description,
-      createdAt: Date.now(),
-      hashtags: hashtags
-        .split(",")
-        .map((word) =>
-          word.trim().startsWith("#") ? word.trim() : `#${word.trim()}`
-        ),
-      meta: {
-        views: 0,
-        likes: 0,
-      },
-    });
+    await VideoService.create({ title, description, hashtags });
     return res.redirect("/");
   } catch (error) {
     console.error(error.message);
-    return res.status(500).render("server-error");
+    return res.status(500).json({
+      error: "서버 내부 오류가 발생했습니다.",
+    });
   }
 };
 
