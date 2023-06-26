@@ -16,16 +16,18 @@ export const postVideo = async (req, res) => {
   const { title, description, hashtags } = req.body;
   if (
     typeof title !== "string" ||
+    title.length > 80 ||
     typeof description !== "string" ||
+    description.length > 140 ||
     typeof hashtags !== "string"
   ) {
     return res.status(400).json({
       error:
-        "유효하지 않는 데이터, title, description, hashtags는 string 타입 이어야합니다.",
+        "유효하지 않는 데이터, title, description, hashtags는 적절한 길이의 string 타입이어야 합니다.",
     });
   }
   try {
-    await VideoService.create({ title, description, hashtags });
+    await VideoService.uploadVideo({ title, description, hashtags });
     return res.redirect("/");
   } catch (error) {
     console.error(error.message);

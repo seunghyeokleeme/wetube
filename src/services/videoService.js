@@ -1,11 +1,16 @@
+import { HashtagService } from "../services";
 import Video from "../models/Video";
-import { dto } from "../utils";
 
 export const findAll = () => {
   return Video.find({});
 };
 
-export const create = (fields) => {
-  const data = dto.video(fields);
+export const uploadVideo = (fields) => {
+  const { title, description, hashtags } = fields;
+  const data = {
+    title,
+    description,
+    hashtags: HashtagService.parseHashtags(hashtags),
+  };
   return Video.create(data);
 };
