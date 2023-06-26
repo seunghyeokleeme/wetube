@@ -1,7 +1,7 @@
 extends base
 
 block content
-    h4 비디오 제목 수정
+    h4 비디오 편집
     form(action=`/videos/${video.id}?_method=PUT`, method="POST")
         input(type="hidden" name="_method" value="PUT")
         input(type="text", placeholder="제목", name="title", required, maxlength=80, value=video.title)

@@ -51,17 +51,25 @@ export const getVideo = async (req, res) => {
   }
 };
 
-export const updateVideo = (req, res) => {
+export const updateVideo = async (req, res) => {
   const {
     params: { id },
-    body: { title },
+    body: { title, description, hashtags },
   } = req;
-  // const idx = videos.findIndex((video) => video.id === parseInt(id, 10));
-  /*
-  if (idx === -1) {
-    console.error(new Error("video가 존재하지 않습니다."));
-    return res.redirect("/");
+  try {
+    const video = await VideoService.getVideoById(id);
+    if (!video) {
+      return res
+        .status(404)
+        .render("404", { pageTitle: "해당 video 가 존재하지 않습니다." });
+    }
+    // ToDo: 업데이트
+    return res.redirect(`/videos/${id}`);
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).render("500");
   }
+  /*
 
   if (typeof title !== "string") {
     console.error(new Error("video title은 string이어야합니다!"));
@@ -70,7 +78,6 @@ export const updateVideo = (req, res) => {
 
   videos[idx].title = title;
   */
-  return res.redirect(`/videos/${id}`);
 };
 
 export const getEdit = async (req, res) => {
