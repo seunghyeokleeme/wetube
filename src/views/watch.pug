@@ -1,7 +1,8 @@
 extends base
 
 block content
+    span 조회수 #{video.meta.views}회
+    span #{video.createdAt} 전
+    small=video.hashtags.join()
     p=video.description
-    small=video.createdAt
-    h3 조회수 #{video.meta.views}회
     a(href=`/videos/${video.id}/edit`) Edit Video &rarr;

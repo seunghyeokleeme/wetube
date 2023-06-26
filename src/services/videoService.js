@@ -19,6 +19,11 @@ export const getVideoById = (videoId) => {
   return Video.findById(videoId);
 };
 
+export const existsVideo = (condition, toBoolean = false) => {
+  const query = Video.exists(condition);
+  return toBoolean ? query.then((video) => Boolean(video)) : query;
+};
+
 export const updateVideo = (videoId, fields) => {
   const { title, description, hashtags } = fields;
   const data = {
@@ -26,5 +31,5 @@ export const updateVideo = (videoId, fields) => {
     description,
     hashtags: HashtagService.parseHashtags(hashtags),
   };
-  return Video.findByIdAndUpdate(videoId, data, { new: true });
+  return Video.findByIdAndUpdate(videoId, data);
 };

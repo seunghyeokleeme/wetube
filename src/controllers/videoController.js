@@ -1,4 +1,5 @@
 import { VideoService } from "../services";
+import { isValidVideoData } from "../utils/validators";
 
 export const home = async (req, res) => {
   try {
@@ -12,13 +13,7 @@ export const home = async (req, res) => {
 
 export const postVideo = async (req, res) => {
   const { title, description, hashtags } = req.body;
-  if (
-    typeof title !== "string" ||
-    title.length > 80 ||
-    typeof description !== "string" ||
-    description.length > 140 ||
-    typeof hashtags !== "string"
-  ) {
+  if (!isValidVideoData(title, description, hashtags)) {
     return res.redirect("/videos/upload");
   }
   try {
@@ -56,28 +51,22 @@ export const updateVideo = async (req, res) => {
     params: { id },
     body: { title, description, hashtags },
   } = req;
+  if (!isValidVideoData(title, description, hashtags)) {
+    return res.redirect(`/videos/${id}/edit`);
+  }
   try {
-    const video = await VideoService.getVideoById(id);
+    const video = await VideoService.existsVideo({ _id: id }, true);
     if (!video) {
       return res
         .status(404)
         .render("404", { pageTitle: "해당 video 가 존재하지 않습니다." });
     }
-    // ToDo: 업데이트
+    await VideoService.updateVideo(id, { title, description, hashtags });
     return res.redirect(`/videos/${id}`);
   } catch (error) {
     console.error(error.message);
     return res.status(500).render("500");
   }
-  /*
-
-  if (typeof title !== "string") {
-    console.error(new Error("video title은 string이어야합니다!"));
-    return res.redirect(`/videos/${id}/edit`);
-  }
-
-  videos[idx].title = title;
-  */
 };
 
 export const getEdit = async (req, res) => {
@@ -89,7 +78,7 @@ export const getEdit = async (req, res) => {
         .status(404)
         .render("404", { pageTitle: "해당 video 가 존재하지 않습니다." });
     }
-    return res.render("edit", { pageTitle: `수정중 ${video.title}`, video });
+    return res.render("edit", { pageTitle: `수정 중 ${video.title}`, video });
   } catch (error) {
     console.error(error.message);
     return res.status(500).render("500");
