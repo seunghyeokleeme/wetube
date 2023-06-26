@@ -6,9 +6,7 @@ export const home = async (req, res) => {
     return res.render("home", { pageTitle: "Home", videos });
   } catch (error) {
     console.error(error.message);
-    return res.status(500).json({
-      error: "서버 내부 오류가 발생했습니다.",
-    });
+    return res.status(500).render("500");
   }
 };
 
@@ -21,19 +19,14 @@ export const postVideo = async (req, res) => {
     description.length > 140 ||
     typeof hashtags !== "string"
   ) {
-    return res.status(400).json({
-      error:
-        "유효하지 않는 데이터, title, description, hashtags는 적절한 길이의 string 타입이어야 합니다.",
-    });
+    return res.redirect("/videos/upload");
   }
   try {
     await VideoService.uploadVideo({ title, description, hashtags });
     return res.redirect("/");
   } catch (error) {
     console.error(error.message);
-    return res.status(500).json({
-      error: "서버 내부 오류가 발생했습니다.",
-    });
+    return res.status(500).render("500");
   }
 };
 
@@ -41,17 +34,21 @@ export const getUpload = (req, res) => {
   return res.render("upload", { pageTitle: "업로드" });
 };
 
-export const getVideo = (req, res) => {
+export const getVideo = async (req, res) => {
   const { id } = req.params;
-  // const video = videos.find((video) => video.id === parseInt(id, 10));
-  return res.render("watch");
-  /*
-  if (video) {
+  try {
+    const video = await VideoService.getVideoById(id);
+    if (!video) {
+      return res
+        .status(404)
+        .render("404", { pageTitle: "해당 video 가 존재하지 않습니다." });
+    }
+
     return res.render("watch", { pageTitle: `Watching ${video.title}`, video });
-  } else {
-    return res.redirect("/");
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).render("500");
   }
-  */
 };
 
 export const updateVideo = (req, res) => {
@@ -76,17 +73,20 @@ export const updateVideo = (req, res) => {
   return res.redirect(`/videos/${id}`);
 };
 
-export const getEdit = (req, res) => {
+export const getEdit = async (req, res) => {
   const { id } = req.params;
-  // const video = videos.find((video) => video.id === parseInt(id, 10));
-  /*
-  if (video) {
+  try {
+    const video = await VideoService.getVideoById(id);
+    if (!video) {
+      return res
+        .status(404)
+        .render("404", { pageTitle: "해당 video 가 존재하지 않습니다." });
+    }
     return res.render("edit", { pageTitle: `수정중 ${video.title}`, video });
-  } else {
-    return res.redirect("/");
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).render("500");
   }
-  */
-  return res.render("edit");
 };
 
 export const search = (req, res) => res.send("Searching by...");

@@ -1,5 +1,7 @@
 extends base
 
 block content
-    h3 조회수 #{video.views}회
-    a(href=`./${video.id}/edit`) Edit Video &rarr;
+    p=video.description
+    small=video.createdAt
+    h3 조회수 #{video.meta.views}회
+    a(href=`/videos/${video.id}/edit`) Edit Video &rarr;

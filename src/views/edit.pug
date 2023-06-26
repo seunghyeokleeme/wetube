@@ -4,5 +4,7 @@ block content
     h4 비디오 제목 수정
     form(action=`/videos/${video.id}?_method=PUT`, method="POST")
         input(type="hidden" name="_method" value="PUT")
-        input(type="text", placeholder="제목", value=video.title, name="title", required)
+        input(type="text", placeholder="제목", name="title", required, maxlength=80, value=video.title)
+        input(type="text", placeholder="설명", name="description", required, maxlength=140, value=video.description)
+        input(type="text", placeholder="해시태그 쉼표로 분리하세요", name="hashtags", required, value=video.hashtags.join())
         input(type="submit", value="저장")

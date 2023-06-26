@@ -14,3 +14,7 @@ export const uploadVideo = (fields) => {
   };
   return Video.create(data);
 };
+
+export const getVideoById = (videoId) => {
+  return Video.findById(videoId);
+};
