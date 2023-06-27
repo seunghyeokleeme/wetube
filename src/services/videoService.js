@@ -1,7 +1,7 @@
 import Video from "../models/Video";
 
 export const findAll = () => {
-  return Video.find({});
+  return Video.find({}).sort({ createdAt: "desc" });
 };
 
 export const getPopularVideos = () => {};
@@ -39,8 +39,10 @@ export const deleteVideo = (videoId) => {
   return Video.findByIdAndDelete(videoId);
 };
 
+export const searchVideos = (query) => {
+  return Video.find({ title: { $regex: new RegExp(`${query}$`, "i") } });
+};
+
 export const likeVideo = (videoId) => {};
 
 export const dislikeVideo = (videoId) => {};
-
-export const searchVideos = (keyword) => {};

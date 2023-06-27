@@ -1,0 +1,14 @@
+extends base
+include mixins/video
+
+block content
+    h4 비디오 검색
+    form(action='/search', method="GET")
+        input(type="text", placeholder="검색어를 입력하세요", name="keyword")
+        input#search-button(type="submit", value="검색")
+    div#search-results
+        each video in videos 
+            +video(video)
+        else 
+            h3 검색결과가 없습니다.
+            span 다른 검색어를 시도해 보거나 검색 필터를 삭제하세요.

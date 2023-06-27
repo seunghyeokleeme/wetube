@@ -90,5 +90,15 @@ export const getEdit = async (req, res, next) => {
   }
 };
 
-export const search = (req, res) => res.send("Searching by...");
-export const remove = (req, res) => res.send("해당 비디오를 삭제합니다.");
+export const search = async (req, res, next) => {
+  const { keyword } = req.query;
+  try {
+    let videos = [];
+    if (keyword) {
+      videos = await VideoService.searchVideos(keyword);
+    }
+    return res.render("search", { pageTitle: "Search", videos });
+  } catch (error) {
+    next(error);
+  }
+};
