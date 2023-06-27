@@ -1,7 +1,7 @@
 extends base
 
 block content
-    form(action=`/videos`, method="POST")
+    form(action="/videos", method="POST")
         input(type="text", placeholder="제목", name="title", required, maxlength=80)
         input(type="text", placeholder="설명", name="description", required, maxlength=140)
         input(type="text", placeholder="해시태그 쉼표로 분리하세요", name="hashtags", required)

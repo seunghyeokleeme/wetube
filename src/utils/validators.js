@@ -10,3 +10,15 @@ export const isValidVideoData = (title, description, hashtags) => {
   }
   return true;
 };
+
+export const isValidUserData = (email, username, name, location) => {
+  if (
+    typeof email !== "string" ||
+    typeof username !== "string" ||
+    typeof name !== "string" ||
+    typeof location !== "string"
+  ) {
+    return false;
+  }
+  return true;
+};
