@@ -1,27 +1,28 @@
+import { NotFoundError, ValidationError } from "../errors";
 import { VideoService } from "../services";
 import { isValidVideoData } from "../utils/validators";
 
-export const home = async (req, res) => {
+export const home = async (req, res, next) => {
   try {
     const videos = await VideoService.findAll();
     return res.render("home", { pageTitle: "Home", videos });
   } catch (error) {
     console.error(error.message);
-    return res.status(500).render("500");
+    next(error);
   }
 };
 
-export const postVideo = async (req, res) => {
+export const postVideo = async (req, res, next) => {
   const { title, description, hashtags } = req.body;
-  if (!isValidVideoData(title, description, hashtags)) {
-    return res.redirect("/videos/upload");
-  }
   try {
+    if (!isValidVideoData(title, description, hashtags)) {
+      throw new ValidationError("유효하지 않는 video 데이터입니다.");
+    }
     await VideoService.uploadVideo({ title, description, hashtags });
     return res.redirect("/");
   } catch (error) {
     console.error(error.message);
-    return res.status(500).render("500");
+    next(error);
   }
 };
 
@@ -29,59 +30,54 @@ export const getUpload = (req, res) => {
   return res.render("upload", { pageTitle: "업로드" });
 };
 
-export const getVideo = async (req, res) => {
+export const getVideo = async (req, res, next) => {
   const { id } = req.params;
   try {
     const video = await VideoService.getVideoById(id);
     if (!video) {
-      return res
-        .status(404)
-        .render("404", { pageTitle: "해당 video 가 존재하지 않습니다." });
+      throw new NotFoundError("해당 비디오가 존재하지 않습니다.");
     }
 
     return res.render("watch", { pageTitle: `Watching ${video.title}`, video });
   } catch (error) {
     console.error(error.message);
-    return res.status(500).render("500");
+    next(error);
   }
 };
 
-export const updateVideo = async (req, res) => {
+export const updateVideo = async (req, res, next) => {
   const {
     params: { id },
     body: { title, description, hashtags },
   } = req;
-  if (!isValidVideoData(title, description, hashtags)) {
-    return res.redirect(`/videos/${id}/edit`);
-  }
   try {
+    if (!isValidVideoData(title, description, hashtags)) {
+      throw new ValidationError("유효하지 않는 video 데이터입니다.");
+    }
+
     const video = await VideoService.existsVideo({ _id: id }, true);
     if (!video) {
-      return res
-        .status(404)
-        .render("404", { pageTitle: "해당 video 가 존재하지 않습니다." });
+      throw new NotFoundError("해당 비디오가 존재하지 않습니다.");
     }
     await VideoService.updateVideo(id, { title, description, hashtags });
     return res.redirect(`/videos/${id}`);
   } catch (error) {
     console.error(error.message);
-    return res.status(500).render("500");
+    next(error);
   }
 };
 
-export const getEdit = async (req, res) => {
+export const getEdit = async (req, res, next) => {
   const { id } = req.params;
   try {
     const video = await VideoService.getVideoById(id);
     if (!video) {
-      return res
-        .status(404)
-        .render("404", { pageTitle: "해당 video 가 존재하지 않습니다." });
+      throw new NotFoundError("해당 비디오가 존재하지 않습니다.");
     }
     return res.render("edit", { pageTitle: `수정 중 ${video.title}`, video });
   } catch (error) {
     console.error(error.message);
-    return res.status(500).render("500");
+    next(error);
   }
 };
 

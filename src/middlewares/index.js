@@ -1,6 +1,11 @@
 import { NotFoundError, ValidationError } from "../errors";
 
-export function errorHandler(err, req, res, next) {
+export const handleNotFound = (req, res, next) => {
+  const error = new NotFoundError(`Not Found - ${req.originalUrl}`);
+  next(error);
+};
+
+export const errorHandler = (err, req, res, next) => {
   console.error(err.message);
 
   if (err instanceof ValidationError) {
@@ -8,8 +13,8 @@ export function errorHandler(err, req, res, next) {
   }
 
   if (err instanceof NotFoundError) {
-    return res.status(404).render("400");
+    return res.status(404).render("404");
   }
 
   return res.status(err.status || 500).render("500");
-}
+};
