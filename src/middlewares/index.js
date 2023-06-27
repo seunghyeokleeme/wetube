@@ -14,19 +14,19 @@ export const errorHandler = (err, req, res, next) => {
   console.error(err.message);
 
   if (err instanceof ValidationError) {
-    return res.status(400).render("400");
+    return res.status(400).render(err.view, { errorMessage: err.message });
   }
 
   if (err instanceof UnauthorizedError) {
-    return res.status(401).render("401");
+    return res.status(401).render(err.view, { errorMessage: err.message });
   }
 
   if (err instanceof ForbiddenError) {
-    return res.status(403).render("403");
+    return res.status(403).render(err.view, { errorMessage: err.message });
   }
 
   if (err instanceof NotFoundError) {
-    return res.status(404).render("404");
+    return res.status(404).render("404", { errorMessage: err.message });
   }
 
   return res.status(err.status || 500).render("500");

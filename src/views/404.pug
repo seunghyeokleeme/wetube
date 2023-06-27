@@ -1,4 +1,15 @@
-extends base
-
-block content 
-    h1 404
+doctype html 
+html(lang="ko")
+    head 
+        title Not Found - 404 | Devtube
+        link(rel="stylesheet" href="https://unpkg.com/mvp.css")
+    body 
+        header
+            h1 404
+        main
+            if errorMessage
+                h2=errorMessage
+            else 
+                h2 해당 페이지가 존재하지 않습니다.
+            a(href="/") 홈으로 돌아가기
+        include partials/footer

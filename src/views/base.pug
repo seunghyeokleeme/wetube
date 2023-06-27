@@ -17,5 +17,7 @@ html(lang="ko")
                     li 
                         a(href="/join") 회원가입
         main
+            if errorMessage
+                span=errorMessage
             block content
         include partials/footer
