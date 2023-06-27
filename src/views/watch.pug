@@ -1,8 +1,15 @@
 extends base
 
 block content
-    span 조회수 #{video.meta.views}회
-    span #{video.createdAt} 전
-    small=video.hashtags.join()
+    div 
+        span 조회수 #{video.meta.views}회
+        span #{video.createdAt} 전
+        ul 
+            each hashtag in video.hashtags
+                li=hashtag
     p=video.description
     a(href=`/videos/${video.id}/edit`) Edit Video &rarr;
+    br
+    form(action=`/videos/${video.id}?_method=DELETE`, method="POST")
+        input(type="hidden" name="_method" value="DELETE")
+        button(type="submit") Delete

@@ -1,16 +1,17 @@
-import { HashtagService } from "../services";
 import Video from "../models/Video";
 
 export const findAll = () => {
   return Video.find({});
 };
 
+export const getPopularVideos = () => {};
+
 export const uploadVideo = (fields) => {
   const { title, description, hashtags } = fields;
   const data = {
     title,
     description,
-    hashtags: HashtagService.parseHashtags(hashtags),
+    hashtags: Video.parseHashtags(hashtags),
   };
   return Video.create(data);
 };
@@ -29,7 +30,17 @@ export const updateVideo = (videoId, fields) => {
   const data = {
     title,
     description,
-    hashtags: HashtagService.parseHashtags(hashtags),
+    hashtags: Video.parseHashtags(hashtags),
   };
   return Video.findByIdAndUpdate(videoId, data);
 };
+
+export const deleteVideo = (videoId) => {
+  return Video.findByIdAndDelete(videoId);
+};
+
+export const likeVideo = (videoId) => {};
+
+export const dislikeVideo = (videoId) => {};
+
+export const searchVideos = (keyword) => {};

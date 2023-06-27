@@ -1,4 +1,9 @@
-import { NotFoundError, ValidationError } from "../errors";
+import {
+  ForbiddenError,
+  NotFoundError,
+  UnauthorizedError,
+  ValidationError,
+} from "../errors";
 
 export const handleNotFound = (req, res, next) => {
   const error = new NotFoundError(`Not Found - ${req.originalUrl}`);
@@ -10,6 +15,14 @@ export const errorHandler = (err, req, res, next) => {
 
   if (err instanceof ValidationError) {
     return res.status(400).render("400");
+  }
+
+  if (err instanceof UnauthorizedError) {
+    return res.status(401).render("401");
+  }
+
+  if (err instanceof ForbiddenError) {
+    return res.status(403).render("403");
   }
 
   if (err instanceof NotFoundError) {
