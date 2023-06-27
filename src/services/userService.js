@@ -1,12 +1,22 @@
 import User from "../models/User";
 
-export const getUserByUsername = (userId) => {};
+export const getUserByUsername = (username) => {};
 
 export const getUserById = (userId) => {};
 
-export const getUserByEmail = (userId) => {};
+export const getUserByEmail = (email) => {};
 
-export const registerUser = (userDetails) => {};
+export const registerUser = (userDetails) => {
+  const { email, username, password, name, location } = userDetails;
+  const data = {
+    email,
+    username,
+    password,
+    name,
+    location,
+  };
+  return User.create(data);
+};
 
 export const existsUser = (condition, toBoolean = false) => {
   const query = User.exists(condition);

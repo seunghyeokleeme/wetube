@@ -11,13 +11,29 @@ export const isValidVideoData = (title, description, hashtags) => {
   return true;
 };
 
-export const isValidUserData = (email, username, name, location) => {
+export const isValidUserData = (
+  email,
+  username,
+  password,
+  password2,
+  name,
+  location
+) => {
   if (
     typeof email !== "string" ||
     typeof username !== "string" ||
+    typeof password !== "string" ||
+    typeof password2 !== "string" ||
     typeof name !== "string" ||
     typeof location !== "string"
   ) {
+    return false;
+  }
+  return true;
+};
+
+export const isEqualPassword = (password1, password2) => {
+  if (password1 !== password2) {
     return false;
   }
   return true;

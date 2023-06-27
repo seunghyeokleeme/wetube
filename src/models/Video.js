@@ -24,5 +24,14 @@ videoSchema.static("parseHashtags", function (hashtags) {
   });
 });
 
+videoSchema.pre("validate", function (next) {
+  this.description = this.description.trim();
+
+  if (this.description === "") {
+    this.description = "해당 비디오에 대한 소개 내용 없습니다.";
+  }
+  next();
+});
+
 const Video = mongoose.model("Video", videoSchema);
 export default Video;
