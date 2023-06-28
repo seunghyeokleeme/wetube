@@ -19,6 +19,7 @@
     "@babel/core": "^7.22.1",
     "@babel/node": "^7.22.1",
     "@babel/preset-env": "^7.22.4",
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "semver": "^7.5.3"
   }
 }
