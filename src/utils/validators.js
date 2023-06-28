@@ -11,7 +11,7 @@ export const isValidVideoData = (title, description, hashtags) => {
   return true;
 };
 
-export const isValidUserData = (
+export const isValidSignupData = (
   email,
   username,
   password,
@@ -32,8 +32,19 @@ export const isValidUserData = (
   return true;
 };
 
-export const isEqualPassword = (password1, password2) => {
+export const arePasswordsEqual = (password1, password2) => {
   if (password1 !== password2) {
+    return false;
+  }
+  return true;
+};
+
+export const isValidLoginData = (username, password) => {
+  if (!username || !password) {
+    return false;
+  }
+
+  if (typeof username !== "string" || typeof password !== "string") {
     return false;
   }
   return true;
