@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
@@ -6,11 +7,6 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true, unique: true, trim: true },
   name: { type: String, required: true, default: "홍길동", trim: true },
   location: { type: String, required: true, default: "지구", trim: true },
-  agreement: {
-    termsOfService: { type: Boolean, required: true, default: true },
-    privacyPolicy: { type: Boolean, required: true, default: false },
-    allowPromotions: { type: Boolean, required: true, default: false },
-  },
 });
 
 userSchema.pre("validate", function (next) {
@@ -24,6 +20,10 @@ userSchema.pre("validate", function (next) {
     this.location = "지구";
   }
   next();
+});
+
+userSchema.pre("save", async function () {
+  this.password = await bcrypt.hash(this.password, 5);
 });
 
 const User = mongoose.model("User", userSchema);

@@ -8,6 +8,7 @@ export const getPopularVideos = () => {};
 
 export const uploadVideo = (fields) => {
   const { title, description, hashtags } = fields;
+  // ToDo: data 중복코드 분리하기
   const data = {
     title,
     description,

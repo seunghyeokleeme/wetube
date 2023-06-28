@@ -29,6 +29,7 @@ export const postUser = async (req, res, next) => {
         "join"
       );
     }
+    // ToDo: password hashing
 
     await UserService.registerUser({
       email,
