@@ -19,18 +19,16 @@ export const postUser = async (req, res, next) => {
     if (!isEqualPassword(password, password2)) {
       throw new ValidationError("비밀번호가 일치하지 않습니다.", "join");
     }
-    const user = UserService.existsUser(
+    const user = await UserService.existsUser(
       { $or: [{ username }, { email }] },
       true
     );
-    if (!user) {
+    if (user) {
       throw new ValidationError(
-        "이미 존재하는 사용자 이름 또는 이메일입니다.",
+        "이미 존재하는 유저 이름 또는 이메일입니다.",
         "join"
       );
     }
-    // ToDo: password hashing
-
     await UserService.registerUser({
       email,
       username,
