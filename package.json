@@ -13,14 +13,12 @@
     "method-override": "^3.0.0",
     "mongoose": "^7.3.1",
     "morgan": "^1.10.0",
-    "pug": "^3.0.2",
-    "semver": ">=7.5.2"
+    "pug": "^3.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.22.1",
     "@babel/node": "^7.22.1",
     "@babel/preset-env": "^7.22.4",
-    "nodemon": "^2.0.22",
-    "semver": ">=7.5.2"
+    "nodemon": "^2.0.22"
   }
 }
