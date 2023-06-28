@@ -1,10 +1,18 @@
+import { UnauthorizedError } from "../errors";
 import User from "../models/User";
+import bcrypt from "bcrypt";
 
-export const getUserByUsername = (username) => {};
+export const getUserByUsername = (username) => {
+  return User.findOne({ username });
+};
 
-export const getUserById = (userId) => {};
+export const getUserById = (userId) => {
+  return User.findById(userId);
+};
 
-export const getUserByEmail = (email) => {};
+export const getUserByEmail = (email) => {
+  return User.findOne({ email });
+};
 
 export const registerUser = (userDetails) => {
   const { email, username, password, name, location } = userDetails;
@@ -23,7 +31,19 @@ export const existsUser = (condition, toBoolean = false) => {
   return toBoolean ? query.then((user) => Boolean(user)) : query;
 };
 
-export const loginUser = (email, password) => {};
+export const verifyPassword = async (inputPassword, userPassword) => {
+  const isPasswordValid = await bcrypt.compare(inputPassword, userPassword);
+  if (!isPasswordValid) {
+    throw new UnauthorizedError("잘못된 사용자 이름 또는 비밀번호.", "login");
+  }
+};
+
+export const loginUser = async (user, password) => {
+  await verifyPassword(password, user.password);
+  // ToDo: createToken(userId, username)
+  const token = "토큰 생성";
+  return { token, userId: user.id };
+};
 
 export const updateProfile = (userId, newDetails) => {};
 
