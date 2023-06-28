@@ -66,7 +66,7 @@ export const updateVideo = async (req, res, next) => {
 export const removeVideo = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const video = await VideoService.getVideoById(id);
+    const video = await VideoService.existsVideo({ _id: id }, true);
     if (!video) {
       throw new NotFoundError("해당 비디오가 존재하지 않습니다.");
     }

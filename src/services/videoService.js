@@ -28,6 +28,7 @@ export const existsVideo = (condition, toBoolean = false) => {
 
 export const updateVideo = (videoId, fields) => {
   const { title, description, hashtags } = fields;
+  // ToDo: data 중복코드 분리하기
   const data = {
     title,
     description,
