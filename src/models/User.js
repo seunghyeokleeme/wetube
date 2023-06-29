@@ -9,6 +9,12 @@ const userSchema = new mongoose.Schema({
   location: { type: String, required: true, default: "지구", trim: true },
 });
 
+userSchema.methods.toSafeObject = function () {
+  const userObject = this.toObject();
+  delete userObject.password;
+  return userObject;
+};
+
 userSchema.pre("validate", function (next) {
   this.name = this.name.trim();
   this.location = this.location.trim();

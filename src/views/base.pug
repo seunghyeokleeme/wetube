@@ -9,13 +9,15 @@ html(lang="ko")
             nav 
                 ul 
                     li 
-                        a(href="/videos/upload") 업로드
-                    li 
                         a(href="/") Home
                     li 
-                        a(href="/search") Search
-                    li 
                         a(href="/join") 회원가입
+                    li 
+                        a(href="/login") 로그인
+                    li 
+                        a(href="/videos/upload") 업로드
+                    li 
+                        a(href="/search") Search
         main
             if errorMessage
                 span=errorMessage

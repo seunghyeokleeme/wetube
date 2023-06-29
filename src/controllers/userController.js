@@ -60,6 +60,10 @@ export const postLogin = async (req, res, next) => {
       throw new UnauthorizedError("잘못된 사용자 이름 또는 비밀번호.", "login");
     }
     await UserService.loginUser(user, password);
+    req.session.loggedIn = true;
+    // ToDo: session에 user 정보 저장할때는 민감한 정보 제거하기 (password)
+    req.session.user = user.toSafeObject();
+    // Cookie 작업
     return res.redirect("/");
   } catch (error) {
     next(error);

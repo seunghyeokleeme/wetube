@@ -45,6 +45,15 @@ export const loginUser = async (user, password) => {
   return { token, userId: user.id };
 };
 
-export const updateProfile = (userId, newDetails) => {};
+export const updateProfile = (userId, newDetails) => {
+  const { name, location } = newDetails;
+  const data = {
+    name,
+    location,
+  };
+  return User.findByIdAndUpdate(userId, data);
+};
 
-export const deleteUser = (userId) => {};
+export const deleteUser = (userId) => {
+  return User.findByIdAndDelete(userId);
+};
