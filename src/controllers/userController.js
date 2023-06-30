@@ -1,5 +1,5 @@
 import { UnauthorizedError, ValidationError } from "../errors";
-import { UserService } from "../services";
+import { AuthService, UserService } from "../services";
 import {
   arePasswordsEqual,
   isValidLoginData,
@@ -64,6 +64,15 @@ export const postLogin = async (req, res, next) => {
     req.session.user = user.toSafeObject();
     // Cookie 작업
     return res.redirect("/");
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const startGithubLogin = (req, res, next) => {
+  try {
+    const finalUrl = AuthService.getLoginUrl("github");
+    return res.redirect(finalUrl);
   } catch (error) {
     next(error);
   }
