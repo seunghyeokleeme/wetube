@@ -25,7 +25,7 @@ app.use(
     cookie: {
       maxAge: 900000,
     },
-    store: MongoStore.create({ mongoUrl: "mongodb://127.0.0.1:27017/devtube" }),
+    store: MongoStore.create({ mongoUrl: process.env.DB_URL }),
   })
 );
 
