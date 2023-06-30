@@ -1,10 +1,12 @@
 import { UnauthorizedError, ValidationError } from "../errors";
 import { AuthService, UserService } from "../services";
+import { fetchFromGithub } from "../utils/githubAPI";
 import {
   arePasswordsEqual,
   isValidLoginData,
   isValidSignupData,
 } from "../utils/validators";
+import fetch from "node-fetch";
 
 export const getJoin = (req, res) => {
   return res.render("join", { pageTitle: "회원가입" });
@@ -71,8 +73,50 @@ export const postLogin = async (req, res, next) => {
 
 export const startGithubLogin = (req, res, next) => {
   try {
-    const finalUrl = AuthService.getLoginUrl("github");
+    const finalUrl = AuthService.getAuthorizationURL("github");
     return res.redirect(finalUrl);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const finishGithubLogin = async (req, res, next) => {
+  const { code } = req.query;
+  try {
+    const finalUrl = AuthService.getAccessTokenURL("github", code);
+    const tokenResponse = await fetch(finalUrl, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    if (!tokenResponse.ok) {
+      throw new UnauthorizedError(
+        "GitHub에서 엑세스 토큰을 검색할 수 없습니다.",
+        "login"
+      );
+    }
+
+    const tokenRequest = await tokenResponse.json();
+    const { access_token } = tokenRequest;
+    const apiUrl = "https://api.github.com";
+    const userData = await fetchFromGithub(`${apiUrl}/user`, access_token);
+    const emailData = await fetchFromGithub(
+      `${apiUrl}/user/emails`,
+      access_token
+    );
+
+    const email = emailData.find(
+      (email) => email.primary === true && email.verified === true
+    );
+    if (!email) {
+      throw new ValidationError(
+        "이메일을 가져올 수 없습니다. GitHub 계정 설정을 확인해 주세요.",
+        "login"
+      );
+    }
+    console.log(userData, email);
   } catch (error) {
     next(error);
   }
