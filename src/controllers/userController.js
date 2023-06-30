@@ -61,7 +61,6 @@ export const postLogin = async (req, res, next) => {
     }
     await UserService.loginUser(user, password);
     req.session.loggedIn = true;
-    // ToDo: session에 user 정보 저장할때는 민감한 정보 제거하기 (password)
     req.session.user = user.toSafeObject();
     // Cookie 작업
     return res.redirect("/");
@@ -69,6 +68,8 @@ export const postLogin = async (req, res, next) => {
     next(error);
   }
 };
+
+export const logout = (req, res) => res.send("logout");
 
 export const getProfile = (req, res) => res.send("00 회원 정보 페이지입니다.");
 export const edit = (req, res) => res.send("회원 정보 수정페이지입니다.");

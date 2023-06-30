@@ -1,7 +1,7 @@
 doctype html 
 html(lang="ko")
     head 
-        title #{pageTitle} | Devtube
+        title #{pageTitle} | #{siteName}
         link(rel="stylesheet" href="https://unpkg.com/mvp.css")
     body 
         header
@@ -11,13 +11,19 @@ html(lang="ko")
                     li 
                         a(href="/") Home
                     li 
-                        a(href="/join") 회원가입
-                    li 
-                        a(href="/login") 로그인
-                    li 
-                        a(href="/videos/upload") 업로드
-                    li 
                         a(href="/search") Search
+                    if loggedIn 
+                        li 
+                            a(href="/videos/upload") 업로드
+                        li 
+                            a(href="/logout") 로그아웃
+                        li 
+                            a(href="/my-profile") #{loggedInUser.name}의 프로필
+                    else
+                        li 
+                            a(href="/join") 회원가입
+                        li 
+                            a(href="/login") 로그인
         main
             if errorMessage
                 span=errorMessage

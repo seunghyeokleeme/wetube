@@ -5,7 +5,7 @@ import globalRouter from "./routers/globalRouter";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
 import methodOverride from "method-override";
-import { errorHandler, handleNotFound } from "./middlewares";
+import { errorHandler, handleNotFound, locals } from "./middlewares";
 
 const app = express();
 
@@ -23,13 +23,8 @@ app.use(
     saveUninitialized: true,
   })
 );
-app.use((req, res, next) => {
-  req.sessionStore.all((error, sessions) => {
-    console.log(sessions);
-    next();
-  });
-});
 
+app.use(locals);
 app.use("/", globalRouter);
 app.use("/users", userRouter);
 app.use("/videos", videoRouter);
