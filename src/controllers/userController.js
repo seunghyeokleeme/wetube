@@ -107,16 +107,40 @@ export const finishGithubLogin = async (req, res, next) => {
       access_token
     );
 
-    const email = emailData.find(
+    const emailObj = emailData.find(
       (email) => email.primary === true && email.verified === true
     );
-    if (!email) {
+    if (!emailObj) {
       throw new ValidationError(
         "이메일을 가져올 수 없습니다. GitHub 계정 설정을 확인해 주세요.",
         "login"
       );
     }
-    console.log(userData, email);
+
+    const existingUser = await UserService.getUserByEmail(emailObj.email);
+    if (existingUser) {
+      req.session.loggedIn = true;
+      req.session.user = existingUser.toSafeObject();
+      return res.redirect("/");
+    } else {
+      const { id: githubId, login, name, location } = userData;
+      console.log(typeof githubId, login, name, location);
+      const user = await UserService.registerUser(
+        {
+          email: emailObj.email,
+          username: String(githubId),
+          name: name ?? "",
+          password: "",
+          location: location ?? "",
+        },
+        true
+      );
+      req.session.loggedIn = true;
+      req.session.user = user.toSafeObject();
+      console.log("create User", user);
+      return res.redirect("/");
+    }
+    // 해당 email을 가진 유저가 있는지 체크하기
   } catch (error) {
     next(error);
   }

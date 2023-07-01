@@ -9,11 +9,11 @@ const videoSchema = new mongoose.Schema({
     trim: true,
     maxLength: 140,
   },
-  createdAt: { type: Date, required: true, default: Date.now },
+  createdAt: { type: Date, default: Date.now },
   hashtags: [{ type: String, trim: true }],
   meta: {
-    views: { type: Number, default: 0, required: true },
-    likes: { type: Number, default: 0, required: true },
+    views: { type: Number, default: 0 },
+    likes: { type: Number, default: 0 },
   },
 });
 

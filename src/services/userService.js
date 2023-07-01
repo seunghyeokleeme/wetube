@@ -14,11 +14,12 @@ export const getUserByEmail = (email) => {
   return User.findOne({ email });
 };
 
-export const registerUser = (userDetails) => {
+export const registerUser = (userDetails, socialOnly = false) => {
   const { email, username, password, name, location } = userDetails;
   const data = {
     email,
     username,
+    socialOnly,
     password,
     name,
     location,
