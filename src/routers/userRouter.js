@@ -1,12 +1,14 @@
 import express from "express";
 import {
   edit,
-  finishGithubLogin,
   getProfile,
   postUser,
   remove,
-  startGithubLogin,
 } from "../controllers/userController";
+import {
+  finishGithubLogin,
+  startGithubLogin,
+} from "../controllers/authController";
 
 const userRouter = express.Router();
 
