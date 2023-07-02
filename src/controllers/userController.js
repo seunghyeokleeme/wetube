@@ -1,8 +1,10 @@
 import { UnauthorizedError, ValidationError } from "../errors";
 import { AuthService, UserService } from "../services";
 import { fetchFromGithub } from "../utils/githubAPI";
+import { fetchFromKakao } from "../utils/kakaoAPI";
 import {
   arePasswordsEqual,
+  isValidKakaoEmailData,
   isValidLoginData,
   isValidSignupData,
 } from "../utils/validators";
@@ -83,23 +85,8 @@ export const startGithubLogin = (req, res, next) => {
 export const finishGithubLogin = async (req, res, next) => {
   const { code } = req.query;
   try {
-    const finalUrl = AuthService.getAccessTokenURL("github", code);
-    const tokenResponse = await fetch(finalUrl, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-      },
-    });
-
-    if (!tokenResponse.ok) {
-      throw new UnauthorizedError(
-        "GitHub에서 엑세스 토큰을 검색할 수 없습니다.",
-        "login"
-      );
-    }
-
-    const tokenRequest = await tokenResponse.json();
-    const { access_token } = tokenRequest;
+    const tokenData = await AuthService.getAccessToken("github", code);
+    const { access_token } = tokenData;
     const apiUrl = "https://api.github.com";
     const userData = await fetchFromGithub(`${apiUrl}/user`, access_token);
     const emailData = await fetchFromGithub(
@@ -123,12 +110,11 @@ export const finishGithubLogin = async (req, res, next) => {
       req.session.user = existingUser.toSafeObject();
       return res.redirect("/");
     } else {
-      const { id: githubId, login, name, location } = userData;
-      console.log(typeof githubId, login, name, location);
+      const { id: githubId, name, location } = userData;
       const user = await UserService.registerUser(
         {
           email: emailObj.email,
-          username: String(githubId),
+          username: String("g" + githubId),
           name: name ?? "",
           password: "",
           location: location ?? "",
@@ -137,10 +123,56 @@ export const finishGithubLogin = async (req, res, next) => {
       );
       req.session.loggedIn = true;
       req.session.user = user.toSafeObject();
-      console.log("create User", user);
       return res.redirect("/");
     }
-    // 해당 email을 가진 유저가 있는지 체크하기
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const startKakaoLogin = (req, res, next) => {
+  try {
+    const finalUrl = AuthService.getAuthorizationURL("kakao");
+    return res.redirect(finalUrl);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const finishKakaoLogin = async (req, res, next) => {
+  const { code } = req.query;
+  try {
+    const tokenData = await AuthService.getAccessToken("kakao", code);
+    const { access_token } = tokenData;
+    const userData = await fetchFromKakao(access_token, "profile");
+    const emailData = await fetchFromKakao(access_token, "email");
+
+    const email = isValidKakaoEmailData(emailData.kakao_account);
+
+    const existingUser = await UserService.getUserByEmail(email);
+    if (existingUser) {
+      req.session.loggedIn = true;
+      req.session.user = existingUser.toSafeObject();
+      return res.redirect("/");
+    } else {
+      const {
+        id: kakaoId,
+        kakao_account: { profile },
+      } = userData;
+
+      const user = await UserService.registerUser(
+        {
+          email,
+          username: String("k" + kakaoId),
+          name: profile.nickname ?? "",
+          password: "",
+        },
+        true
+      );
+      req.session.loggedIn = true;
+      req.session.user = user.toSafeObject();
+      return res.redirect("/");
+    }
   } catch (error) {
     next(error);
   }
