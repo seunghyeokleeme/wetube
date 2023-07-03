@@ -121,4 +121,11 @@ export const finishKakaoLogin = async (req, res, next) => {
   }
 };
 
-export const logout = (req, res) => res.send("logout");
+export const logout = async (req, res, next) => {
+  try {
+    await req.session.destroy();
+    return res.status(200).json({ message: "Logged out." });
+  } catch (error) {
+    next(error);
+  }
+};

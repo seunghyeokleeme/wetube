@@ -8,6 +8,7 @@ import {
 import {
   finishGithubLogin,
   finishKakaoLogin,
+  logout,
   startGithubLogin,
   startKakaoLogin,
 } from "../controllers/authController";
@@ -15,6 +16,7 @@ import {
 const userRouter = express.Router();
 
 userRouter.route("/").post(postUser);
+userRouter.post("/logout", logout);
 userRouter.get("/edit", edit);
 userRouter.get("/remove", remove);
 userRouter.get("/github/start", startGithubLogin);
