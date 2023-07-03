@@ -57,11 +57,12 @@ export const finishGithubLogin = async (req, res, next) => {
 
     let user = await UserService.getUserByEmail(emailObj.email);
     if (!user) {
-      const { id: githubId, name, location } = userData;
+      const { id: githubId, name, location, avatar_url: avatarUrl } = userData;
       user = await UserService.registerUser(
         {
           email: emailObj.email,
           username: String("g" + githubId),
+          avatarUrl,
           name: name ?? "",
           password: "",
           location: location ?? "",
@@ -100,14 +101,17 @@ export const finishKakaoLogin = async (req, res, next) => {
     if (!user) {
       const {
         id: kakaoId,
-        kakao_account: { profile },
+        kakao_account: {
+          profile: { nickname, profile_image_url },
+        },
       } = userData;
 
       user = await UserService.registerUser(
         {
           email,
           username: String("k" + kakaoId),
-          name: profile.nickname ?? "",
+          name: nickname,
+          avatarUrl: profile_image_url,
           password: "",
         },
         true
