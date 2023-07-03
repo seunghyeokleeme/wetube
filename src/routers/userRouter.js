@@ -16,7 +16,7 @@ import {
 const userRouter = express.Router();
 
 userRouter.route("/").post(postUser);
-userRouter.get("/logout", logout);
+userRouter.post("/logout", logout);
 userRouter.get("/edit", edit);
 userRouter.get("/remove", remove);
 userRouter.get("/github/start", startGithubLogin);
