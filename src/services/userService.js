@@ -15,10 +15,11 @@ export const getUserByEmail = (email) => {
 };
 
 export const registerUser = (userDetails, socialOnly = false) => {
-  const { email, username, password, name, location } = userDetails;
+  const { email, username, avatarUrl, password, name, location } = userDetails;
   const data = {
     email,
     username,
+    avatarUrl,
     socialOnly,
     password,
     name,
