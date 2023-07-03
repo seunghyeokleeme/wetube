@@ -55,14 +55,10 @@ export const finishGithubLogin = async (req, res, next) => {
       );
     }
 
-    const existingUser = await UserService.getUserByEmail(emailObj.email);
-    if (existingUser) {
-      req.session.loggedIn = true;
-      req.session.user = existingUser.toSafeObject();
-      return res.redirect("/");
-    } else {
+    let user = await UserService.getUserByEmail(emailObj.email);
+    if (!user) {
       const { id: githubId, name, location } = userData;
-      const user = await UserService.registerUser(
+      user = await UserService.registerUser(
         {
           email: emailObj.email,
           username: String("g" + githubId),
@@ -72,10 +68,10 @@ export const finishGithubLogin = async (req, res, next) => {
         },
         true
       );
-      req.session.loggedIn = true;
-      req.session.user = user.toSafeObject();
-      return res.redirect("/");
     }
+    req.session.loggedIn = true;
+    req.session.user = user.toSafeObject();
+    return res.redirect("/");
   } catch (error) {
     next(error);
   }
@@ -100,18 +96,14 @@ export const finishKakaoLogin = async (req, res, next) => {
 
     const email = isValidKakaoEmailData(emailData.kakao_account);
 
-    const existingUser = await UserService.getUserByEmail(email);
-    if (existingUser) {
-      req.session.loggedIn = true;
-      req.session.user = existingUser.toSafeObject();
-      return res.redirect("/");
-    } else {
+    let user = await UserService.getUserByEmail(email);
+    if (!user) {
       const {
         id: kakaoId,
         kakao_account: { profile },
       } = userData;
 
-      const user = await UserService.registerUser(
+      user = await UserService.registerUser(
         {
           email,
           username: String("k" + kakaoId),
@@ -120,10 +112,10 @@ export const finishKakaoLogin = async (req, res, next) => {
         },
         true
       );
-      req.session.loggedIn = true;
-      req.session.user = user.toSafeObject();
-      return res.redirect("/");
     }
+    req.session.loggedIn = true;
+    req.session.user = user.toSafeObject();
+    return res.redirect("/");
   } catch (error) {
     next(error);
   }
