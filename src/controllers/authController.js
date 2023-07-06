@@ -162,7 +162,8 @@ export const updatePassword = async (req, res, next) => {
     }
 
     await AuthService.changePassword(_id, oldPassword, newPassword);
-    return res.redirect("/users/logout");
+    await req.session.destroy();
+    return res.redirect("/login");
   } catch (error) {
     next(error);
   }
