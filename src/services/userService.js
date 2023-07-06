@@ -2,16 +2,16 @@ import { UnauthorizedError } from "../errors";
 import User from "../models/User";
 import bcrypt from "bcrypt";
 
-export const getUserByUsername = (username) => {
-  return User.findOne({ username });
-};
-
 export const getUserById = (userId) => {
   return User.findById(userId);
 };
 
-export const getUserByEmail = (email) => {
-  return User.findOne({ email });
+export const getUserByUsername = (username, filters = {}) => {
+  return User.findOne({ username, ...filters });
+};
+
+export const getUserByEmail = (email, filters = {}) => {
+  return User.findOne({ email, ...filters });
 };
 
 export const registerUser = (userDetails, socialOnly = false) => {
@@ -48,12 +48,14 @@ export const loginUser = async (user, password) => {
 };
 
 export const updateProfile = (userId, newDetails) => {
-  const { name, location } = newDetails;
+  const { email, username, name, location } = newDetails;
   const data = {
+    email,
+    username,
     name,
     location,
   };
-  return User.findByIdAndUpdate(userId, data);
+  return User.findByIdAndUpdate(userId, data, { new: true });
 };
 
 export const deleteUser = (userId) => {
