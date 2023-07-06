@@ -2,7 +2,12 @@ import { UnauthorizedError, ValidationError } from "../errors";
 import { AuthService, UserService } from "../services";
 import { fetchFromGithub } from "../utils/githubAPI";
 import { fetchFromKakao } from "../utils/kakaoAPI";
-import { isValidKakaoEmailData, isValidLoginData } from "../utils/validators";
+import {
+  arePasswordsEqual,
+  isValidChangePasswordData,
+  isValidKakaoEmailData,
+  isValidLoginData,
+} from "../utils/validators";
 
 export const postLogin = async (req, res, next) => {
   const { username, password } = req.body;
@@ -122,6 +127,46 @@ export const finishKakaoLogin = async (req, res, next) => {
     req.session.loggedIn = true;
     req.session.user = user.toSafeObject();
     return res.redirect("/");
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getChangePassword = (req, res) => {
+  return res.render("change-password", { pageTitle: "비밀번호 변경" });
+};
+
+export const updatePassword = async (req, res, next) => {
+  const { oldPassword, newPassword, newPasswordConfirm } = req.body;
+
+  try {
+    if (
+      !isValidChangePasswordData(oldPassword, newPassword, newPasswordConfirm)
+    ) {
+      throw new ValidationError(
+        "유효하지 않는 비밀번호 변경 데이터입니다.",
+        "change-password"
+      );
+    }
+
+    if (!arePasswordsEqual(newPassword, newPasswordConfirm)) {
+      throw new ValidationError(
+        "새 비밀번호가 일치하지 않습니다.",
+        "change-password"
+      );
+    }
+
+    // await AuthService.changePassword(userId, oldPassword, newPassword);
+    return res.redirect("/users/logout");
+    /*
+    1. req.body 입력 데이터 유효성 검사
+    2. newPassword newPasswordConfirm 이 동일한지 체크!
+    3. 유저에 비밀번호 업데이트
+      - 3-1. 기존의 oldPassword와 입력값 같은지 체크!
+      - 3-2. 비밀번호 해시화
+      - 3-3. 비밀번호 저장
+    5. /logout 하기
+    */
   } catch (error) {
     next(error);
   }
