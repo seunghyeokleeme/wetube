@@ -16,7 +16,7 @@ html(lang="ko")
                         li 
                             a(href="/videos/upload") 업로드
                         li 
-                            a(href="/my-profile") #{loggedInUser.name}의 프로필
+                            a(href=`/users/${loggedInUser._id}`) 나의 프로필
                         li
                             button#logout 로그아웃
                     else

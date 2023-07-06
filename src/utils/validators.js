@@ -34,6 +34,18 @@ export const isValidSignupData = (
   return true;
 };
 
+export const isValidProfileData = (email, username, name, location) => {
+  if (
+    typeof email !== "string" ||
+    typeof username !== "string" ||
+    typeof name !== "string" ||
+    typeof location !== "string"
+  ) {
+    return false;
+  }
+  return true;
+};
+
 export const arePasswordsEqual = (password1, password2) => {
   if (password1 !== password2) {
     return false;

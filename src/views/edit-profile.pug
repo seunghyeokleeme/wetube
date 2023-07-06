@@ -1,0 +1,11 @@
+extends base
+
+block content
+    h4 프로필 수정
+    form(action=`/users/${loggedInUser._id}?_method=PATCH`, method="POST")
+        input(type="hidden" name="_method" value="PATCH")
+        input(type="email", placeholder="이메일 주소", name="email", required, value=loggedInUser.email)
+        input(type="text", placeholder="아이디", name="username", required, maxlength=15, value=loggedInUser.username)
+        input(type="text", name="name", placeholder="이름", value=loggedInUser.name)
+        input(type="text", name="location", placeholder="사는 지역", value=loggedInUser.location)
+        input(type="submit", value="프로필 업데이트")
