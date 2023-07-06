@@ -53,9 +53,9 @@ export const isValidLoginData = (username, password) => {
 };
 
 export const isValidKakaoEmailData = (emailData) => {
-  const { has_email, is_email_valid, is_email_verified, email } = emailData;
+  const { is_email_valid, is_email_verified, email } = emailData;
 
-  if (has_email && is_email_valid && is_email_verified) {
+  if (is_email_valid && is_email_verified) {
     return email;
   } else {
     throw new ValidationError("이메일이 잘못되었거나 확인되지 않았습니다.");
