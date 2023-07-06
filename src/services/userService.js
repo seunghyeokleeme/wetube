@@ -33,15 +33,26 @@ export const existsUser = (condition, toBoolean = false) => {
   return toBoolean ? query.then((user) => Boolean(user)) : query;
 };
 
-export const verifyPassword = async (inputPassword, userPassword) => {
+export const verifyPassword = async (
+  inputPassword,
+  userPassword,
+  context = "login"
+) => {
   const isPasswordValid = await bcrypt.compare(inputPassword, userPassword);
+
+  const errorMessages = {
+    login: "잘못된 사용자 이름 또는 비밀번호",
+    "change-password":
+      "비밀번호 변경에 실패했습니다! 이전 비밀번호를 확인해주세요.",
+  };
   if (!isPasswordValid) {
-    throw new UnauthorizedError("잘못된 사용자 이름 또는 비밀번호.", "login");
+    const errorMsg = errorMessages[context] || "비밀번호가 틀렸습니다!";
+    throw new UnauthorizedError(errorMsg, context);
   }
 };
 
 export const loginUser = async (user, password) => {
-  await verifyPassword(password, user.password);
+  await verifyPassword(password, user.password, "login");
   // ToDo: createToken(userId, username)
   const token = "토큰 생성";
   return { token, userId: user.id };
