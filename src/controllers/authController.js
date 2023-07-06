@@ -10,7 +10,9 @@ export const postLogin = async (req, res, next) => {
     if (!isValidLoginData(username, password)) {
       throw new ValidationError("유효하지 않는 login 데이터입니다", "login");
     }
-    const user = await UserService.existsUser({ username, socialOnly: false });
+    const user = await UserService.getUserByUsername(username, {
+      socialOnly: false,
+    });
     if (!user) {
       throw new UnauthorizedError("잘못된 사용자 이름 또는 비밀번호.", "login");
     }
