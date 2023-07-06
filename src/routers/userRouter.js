@@ -13,17 +13,21 @@ import {
   startGithubLogin,
   startKakaoLogin,
 } from "../controllers/authController";
+import { privateOnly, publicOnly } from "../middlewares";
 
 const userRouter = express.Router();
 
-userRouter.route("/").post(postUser);
-userRouter.post("/logout", logout);
-userRouter.get("/edit", getEdit);
-userRouter.get("/remove", remove);
-userRouter.get("/github/start", startGithubLogin);
-userRouter.get("/github/finish", finishGithubLogin);
-userRouter.get("/kakao/start", startKakaoLogin);
-userRouter.get("/kakao/finish", finishKakaoLogin);
-userRouter.route("/:id([0-9a-f]{24})").get(getProfile).patch(updateProfile);
+userRouter.route("/").all(publicOnly).post(postUser);
+userRouter.post("/logout", privateOnly, logout);
+userRouter.get("/edit", privateOnly, getEdit);
+userRouter.get("/remove", privateOnly, remove);
+userRouter.get("/github/start", publicOnly, startGithubLogin);
+userRouter.get("/github/finish", publicOnly, finishGithubLogin);
+userRouter.get("/kakao/start", publicOnly, startKakaoLogin);
+userRouter.get("/kakao/finish", publicOnly, finishKakaoLogin);
+userRouter
+  .route("/:id([0-9a-f]{24})")
+  .get(getProfile)
+  .patch(privateOnly, updateProfile);
 
 export default userRouter;
