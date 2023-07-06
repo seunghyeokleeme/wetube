@@ -46,5 +46,9 @@ export const getLogin = (req, res) =>
   res.render("login", { pageTitle: "로그인" });
 
 export const getProfile = (req, res) => res.send("00 회원 정보 페이지입니다.");
-export const edit = (req, res) => res.send("회원 정보 수정페이지입니다.");
+
+export const getEdit = (req, res) => {
+  res.render("edit-profile", { pageTitle: "프로필 수정" });
+};
+
 export const remove = (req, res) => res.send("회원 정보 탈퇴페이지입니다.");
