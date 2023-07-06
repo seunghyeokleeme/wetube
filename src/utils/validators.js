@@ -46,8 +46,23 @@ export const isValidProfileData = (email, username, name, location) => {
   return true;
 };
 
-export const arePasswordsEqual = (password1, password2) => {
-  if (password1 !== password2) {
+export const isValidChangePasswordData = (
+  oldPassword,
+  newPassword,
+  newPassword2
+) => {
+  if (
+    typeof oldPassword !== "string" ||
+    typeof newPassword !== "string" ||
+    typeof newPassword2 !== "string"
+  ) {
+    return false;
+  }
+  return true;
+};
+
+export const arePasswordsEqual = (password, passwordConfirm) => {
+  if (password !== passwordConfirm) {
     return false;
   }
   return true;
