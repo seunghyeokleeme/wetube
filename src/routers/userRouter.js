@@ -9,9 +9,11 @@ import {
 import {
   finishGithubLogin,
   finishKakaoLogin,
+  getChangePassword,
   logout,
   startGithubLogin,
   startKakaoLogin,
+  updatePassword,
 } from "../controllers/authController";
 import { privateOnly, publicOnly } from "../middlewares";
 
@@ -20,6 +22,7 @@ const userRouter = express.Router();
 userRouter.route("/").all(publicOnly).post(postUser);
 userRouter.post("/logout", privateOnly, logout);
 userRouter.get("/edit", privateOnly, getEdit);
+userRouter.all(privateOnly).get(getChangePassword).patch(updatePassword);
 userRouter.get("/remove", privateOnly, remove);
 userRouter.get("/github/start", publicOnly, startGithubLogin);
 userRouter.get("/github/finish", publicOnly, finishGithubLogin);
