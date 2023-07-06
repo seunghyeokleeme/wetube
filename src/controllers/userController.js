@@ -6,10 +6,6 @@ import {
   isValidSignupData,
 } from "../utils/validators";
 
-export const getJoin = (req, res) => {
-  return res.render("join", { pageTitle: "회원가입" });
-};
-
 export const postUser = async (req, res, next) => {
   const { email, username, password, password2, name, location } = req.body;
 
@@ -45,9 +41,6 @@ export const postUser = async (req, res, next) => {
     next(error);
   }
 };
-
-export const getLogin = (req, res) =>
-  res.render("login", { pageTitle: "로그인" });
 
 export const getProfile = (req, res) => res.send("00 회원 정보 페이지입니다.");
 

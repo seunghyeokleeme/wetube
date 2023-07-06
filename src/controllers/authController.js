@@ -9,6 +9,13 @@ import {
   isValidLoginData,
 } from "../utils/validators";
 
+export const getJoin = (req, res) => {
+  return res.render("join", { pageTitle: "회원가입" });
+};
+
+export const getLogin = (req, res) =>
+  res.render("login", { pageTitle: "로그인" });
+
 export const postLogin = async (req, res, next) => {
   const { username, password } = req.body;
   try {
@@ -21,7 +28,7 @@ export const postLogin = async (req, res, next) => {
     if (!user) {
       throw new UnauthorizedError("잘못된 사용자 이름 또는 비밀번호.", "login");
     }
-    await UserService.loginUser(user, password);
+    await AuthService.loginUser(user, password);
     req.session.loggedIn = true;
     req.session.user = user.toSafeObject();
     // Cookie 작업

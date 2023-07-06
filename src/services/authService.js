@@ -1,6 +1,7 @@
 import { UserService } from ".";
 import { UnauthorizedError, ValidationError } from "../errors";
 import fetch from "node-fetch";
+import bcrypt from "bcrypt";
 
 const snsConfigurations = {
   github: {
@@ -74,13 +75,34 @@ export const getAccessToken = async (snsType, code) => {
   return await tokenResponse.json();
 };
 
+export const verifyPassword = async (
+  inputPassword,
+  userPassword,
+  context = "login"
+) => {
+  const isPasswordValid = await bcrypt.compare(inputPassword, userPassword);
+
+  const errorMessages = {
+    login: "잘못된 사용자 이름 또는 비밀번호",
+    "change-password":
+      "비밀번호 변경에 실패했습니다! 이전 비밀번호를 확인해주세요.",
+  };
+  if (!isPasswordValid) {
+    const errorMsg = errorMessages[context] || "비밀번호가 틀렸습니다!";
+    throw new UnauthorizedError(errorMsg, context);
+  }
+};
+
+export const loginUser = async (user, password) => {
+  await verifyPassword(password, user.password, "login");
+  // ToDo: createToken(userId, username)
+  const token = "토큰 생성";
+  return { token, userId: user.id };
+};
+
 export const changePassword = async (userId, oldPassword, newPassword) => {
   const user = await UserService.getUserById(userId);
-  await UserService.verifyPassword(
-    oldPassword,
-    user.password,
-    "change-password"
-  );
+  await verifyPassword(oldPassword, user.password, "change-password");
   user.password = newPassword;
   await user.save();
 };
