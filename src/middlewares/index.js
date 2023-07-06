@@ -11,8 +11,6 @@ export const handleNotFound = (req, res, next) => {
 };
 
 export const errorHandler = (err, req, res, next) => {
-  console.error(err.message);
-
   if (err instanceof ValidationError) {
     return res
       .status(400)
@@ -36,7 +34,7 @@ export const errorHandler = (err, req, res, next) => {
       .status(404)
       .render("404", { errorMessage: err.message, pageTitle: err.view });
   }
-
+  console.error(err.message); // Todo: 500번대, 그외 error 만 서버에 로그
   return res.status(err.status || 500).render("500");
 };
 
