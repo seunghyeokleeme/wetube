@@ -137,7 +137,12 @@ export const getChangePassword = (req, res) => {
 };
 
 export const updatePassword = async (req, res, next) => {
-  const { oldPassword, newPassword, newPasswordConfirm } = req.body;
+  const {
+    body: { oldPassword, newPassword, newPasswordConfirm },
+    session: {
+      user: { _id },
+    },
+  } = req;
 
   try {
     if (
@@ -156,17 +161,8 @@ export const updatePassword = async (req, res, next) => {
       );
     }
 
-    // await AuthService.changePassword(userId, oldPassword, newPassword);
+    await AuthService.changePassword(_id, oldPassword, newPassword);
     return res.redirect("/users/logout");
-    /*
-    1. req.body 입력 데이터 유효성 검사
-    2. newPassword newPasswordConfirm 이 동일한지 체크!
-    3. 유저에 비밀번호 업데이트
-      - 3-1. 기존의 oldPassword와 입력값 같은지 체크!
-      - 3-2. 비밀번호 해시화
-      - 3-3. 비밀번호 저장
-    5. /logout 하기
-    */
   } catch (error) {
     next(error);
   }

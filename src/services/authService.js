@@ -1,3 +1,4 @@
+import { UserService } from ".";
 import { UnauthorizedError, ValidationError } from "../errors";
 import fetch from "node-fetch";
 
@@ -71,4 +72,15 @@ export const getAccessToken = async (snsType, code) => {
   }
 
   return await tokenResponse.json();
+};
+
+export const changePassword = async (userId, oldPassword, newPassword) => {
+  const user = await UserService.getUserById(userId);
+  await UserService.verifyPassword(
+    oldPassword,
+    user.password,
+    "change-password"
+  );
+  user.password = newPassword;
+  await user.save();
 };
