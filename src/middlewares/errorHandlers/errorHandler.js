@@ -1,16 +1,10 @@
-import multer from "multer";
 import {
   CustomMulterError,
   ForbiddenError,
   NotFoundError,
   UnauthorizedError,
   ValidationError,
-} from "../errors";
-
-export const handleNotFound = (req, res, next) => {
-  const error = new NotFoundError(`Not Found - ${req.originalUrl}`);
-  next(error);
-};
+} from "../../errors";
 
 export const errorHandler = (err, req, res, next) => {
   if (err instanceof ValidationError) {
@@ -45,38 +39,3 @@ export const errorHandler = (err, req, res, next) => {
   console.error(err.message); // Todo: 500번대, 그외 error 만 서버에 로그
   return res.status(err.status || 500).render("500");
 };
-
-export const locals = (req, res, next) => {
-  res.locals.loggedIn = Boolean(req.session.loggedIn);
-  res.locals.siteName = "Devtube";
-  res.locals.loggedInUser = req.session.user ?? {};
-  next();
-};
-
-export const privateOnly = (req, res, next) => {
-  if (!req.session.loggedIn) {
-    return res.redirect("/login");
-  }
-  next();
-};
-
-export const publicOnly = (req, res, next) => {
-  if (req.session.loggedIn) {
-    return res.redirect("/");
-  }
-  next();
-};
-
-export const avatarUpload = multer({
-  dest: "uploads/avatars/",
-  limits: {
-    fileSize: 500000,
-  },
-});
-
-export const videoUpload = multer({
-  dest: "uploads/videos/",
-  limits: {
-    fileSize: 10000000,
-  },
-});

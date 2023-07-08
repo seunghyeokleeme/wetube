@@ -1,9 +1,8 @@
-import { MulterError } from "multer";
-import { CustomMulterError, NotFoundError, ValidationError } from "../errors";
-import { videoUpload } from "../middlewares";
+import { NotFoundError, ValidationError } from "../errors";
+import { videoUpload } from "../middlewares/uploads";
 import { VideoService } from "../services";
 import { isValidVideoData } from "../utils/validators";
-import { determineView } from "../utils/determineView";
+import { handleUpload } from "../utils/uploadHandler";
 
 export const home = async (req, res, next) => {
   try {
@@ -14,18 +13,7 @@ export const home = async (req, res, next) => {
   }
 };
 
-export const handleVideoUpload = (req, res, next) => {
-  const view = determineView(req.originalUrl);
-
-  videoUpload.single("video")(req, res, (error) => {
-    if (error instanceof MulterError) {
-      const customMulterError = new CustomMulterError(error, view);
-      next(customMulterError);
-    } else {
-      next(error);
-    }
-  });
-};
+export const handleVideoUpload = handleUpload(videoUpload, "video");
 
 export const postVideo = async (req, res, next) => {
   const {

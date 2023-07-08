@@ -6,7 +6,9 @@ import globalRouter from "./routers/globalRouter";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
 import methodOverride from "method-override";
-import { errorHandler, handleNotFound, locals } from "./middlewares";
+import { locals } from "./middlewares/locals";
+import { handleNotFound } from "./middlewares/errorHandlers/notFoundHandler";
+import { errorHandler } from "./middlewares/errorHandlers/errorHandler";
 
 const app = express();
 

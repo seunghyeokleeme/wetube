@@ -16,7 +16,7 @@ import {
   startKakaoLogin,
   updatePassword,
 } from "../controllers/authController";
-import { privateOnly, publicOnly } from "../middlewares";
+import { privateOnly, publicOnly } from "../middlewares/auth";
 
 const userRouter = express.Router();
 

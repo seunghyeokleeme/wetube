@@ -1,10 +1,4 @@
 import { MulterError } from "multer";
-
-const multerErrorMessageMap = {
-  LIMIT_FILE_SIZE: "파일 크기가 너무 큽니다.",
-  // 다른 코드와 해당하는 메시지 추가
-};
-
 export class ValidationError extends Error {
   constructor(message = "Bad Request", view = "errorView") {
     super(message);
@@ -40,6 +34,10 @@ export class NotFoundError extends Error {
   }
 }
 
+const multerErrorMessageMap = {
+  LIMIT_FILE_SIZE: "파일 크기가 너무 큽니다.",
+  // 다른 코드와 해당하는 메시지 추가
+};
 export class CustomMulterError extends MulterError {
   constructor(error, view = "errorView") {
     super(error.code);

@@ -1,4 +1,5 @@
 import Video from "../models/Video";
+import { makeVideoData } from "../utils/dataHandler";
 
 export const findAll = () => {
   return Video.find({}).sort({ createdAt: "desc" });
@@ -7,14 +8,7 @@ export const findAll = () => {
 export const getPopularVideos = () => {};
 
 export const uploadVideo = (fields) => {
-  const { title, description, hashtags, fileUrl } = fields;
-  // ToDo: data 중복코드 분리하기
-  const data = {
-    fileUrl,
-    title,
-    description,
-    hashtags: Video.parseHashtags(hashtags),
-  };
+  const data = makeVideoData(fields);
   return Video.create(data);
 };
 
@@ -27,15 +21,9 @@ export const existsVideo = (condition, toBoolean = false) => {
   return toBoolean ? query.then((video) => Boolean(video)) : query;
 };
 
-export const updateVideo = (videoId, fields) => {
-  const { title, description, hashtags, file } = fields;
-  // ToDo: data 중복코드 분리하기
-  const data = {
-    fileUrl: file?.path,
-    title,
-    description,
-    hashtags: Video.parseHashtags(hashtags),
-  };
+export const updateVideo = (videoId, { file, ...fields }) => {
+  const fileUrl = file?.path;
+  const data = makeVideoData({ ...fields, fileUrl });
   return Video.findByIdAndUpdate(videoId, data);
 };
 

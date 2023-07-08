@@ -5,6 +5,7 @@ import { fetchFromKakao } from "../utils/kakaoAPI";
 import {
   arePasswordsEqual,
   isValidChangePasswordData,
+  isValidGithubEmailData,
   isValidKakaoEmailData,
   isValidLoginData,
 } from "../utils/validators";
@@ -59,22 +60,14 @@ export const finishGithubLogin = async (req, res, next) => {
       access_token
     );
 
-    const emailObj = emailData.find(
-      (email) => email.primary === true && email.verified === true
-    );
-    if (!emailObj) {
-      throw new ValidationError(
-        "이메일을 가져올 수 없습니다. GitHub 계정 설정을 확인해 주세요.",
-        "login"
-      );
-    }
+    const email = isValidGithubEmailData(emailData);
 
-    let user = await UserService.getUserByEmail(emailObj.email);
+    let user = await UserService.getUserByEmail(email);
     if (!user) {
       const { id: githubId, name, location, avatar_url: avatarUrl } = userData;
       user = await UserService.registerUser(
         {
-          email: emailObj.email,
+          email,
           username: String("g" + githubId),
           avatarUrl,
           name: name ?? "",

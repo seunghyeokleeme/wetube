@@ -1,7 +1,7 @@
 import express from "express";
 import { home, search } from "../controllers/videoController";
 import { getJoin, getLogin, postLogin } from "../controllers/authController";
-import { publicOnly } from "../middlewares";
+import { publicOnly } from "../middlewares/auth";
 
 const globalRouter = express.Router();
 

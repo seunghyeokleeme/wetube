@@ -8,7 +8,7 @@ import {
   removeVideo,
   updateVideo,
 } from "../controllers/videoController";
-import { privateOnly } from "../middlewares";
+import { privateOnly } from "../middlewares/auth";
 
 const videoRouter = express.Router();
 

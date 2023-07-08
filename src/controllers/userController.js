@@ -1,13 +1,12 @@
-import { MulterError } from "multer";
-import { CustomMulterError, ForbiddenError, ValidationError } from "../errors";
-import { avatarUpload } from "../middlewares";
+import { ForbiddenError, ValidationError } from "../errors";
+import { avatarUpload } from "../middlewares/uploads";
 import { UserService } from "../services";
 import {
   arePasswordsEqual,
   isValidProfileData,
   isValidSignupData,
 } from "../utils/validators";
-import { determineView } from "../utils/determineView";
+import { handleUpload } from "../utils/uploadHandler";
 
 export const postUser = async (req, res, next) => {
   const { email, username, password, password2, name, location } = req.body;
@@ -51,18 +50,7 @@ export const getEdit = (req, res) => {
   res.render("edit-profile", { pageTitle: "프로필 수정" });
 };
 
-export const handleAvatarUpload = (req, res, next) => {
-  const view = determineView(req.originalUrl);
-
-  avatarUpload.single("avatar")(req, res, (error) => {
-    if (error instanceof MulterError) {
-      const customMulterError = new CustomMulterError(error, view);
-      next(customMulterError);
-    } else {
-      next(error);
-    }
-  });
-};
+export const handleAvatarUpload = handleUpload(avatarUpload, "avatar");
 
 export const updateProfile = async (req, res, next) => {
   const {
