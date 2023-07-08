@@ -1,5 +1,6 @@
 import multer from "multer";
 import {
+  CustomMulterError,
   ForbiddenError,
   NotFoundError,
   UnauthorizedError,
@@ -33,7 +34,13 @@ export const errorHandler = (err, req, res, next) => {
   if (err instanceof NotFoundError) {
     return res
       .status(404)
-      .render("404", { errorMessage: err.message, pageTitle: err.view });
+      .render("404", { errorMessage: err.message, pageTitle: "404" });
+  }
+
+  if (err instanceof CustomMulterError) {
+    return res
+      .status(err.status)
+      .render(err.view, { errorMessage: err.message, pageTitle: err.view });
   }
   console.error(err.message); // Todo: 500번대, 그외 error 만 서버에 로그
   return res.status(err.status || 500).render("500");
@@ -60,4 +67,16 @@ export const publicOnly = (req, res, next) => {
   next();
 };
 
-export const uploadFiles = multer({ dest: "uploads/" });
+export const avatarUpload = multer({
+  dest: "uploads/avatars/",
+  limits: {
+    fileSize: 500000,
+  },
+});
+
+export const videoUpload = multer({
+  dest: "uploads/videos/",
+  limits: {
+    fileSize: 10000000,
+  },
+});
