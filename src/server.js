@@ -30,6 +30,7 @@ app.use(
 );
 
 app.use(locals);
+app.use("/uploads", express.static("uploads"));
 app.use("/", globalRouter);
 app.use("/users", userRouter);
 app.use("/videos", videoRouter);

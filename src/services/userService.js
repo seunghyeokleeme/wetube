@@ -32,12 +32,13 @@ export const existsUser = (condition, toBoolean = false) => {
 };
 
 export const updateProfile = (userId, newDetails) => {
-  const { email, username, name, location } = newDetails;
+  const { email, username, name, location, file } = newDetails;
   const data = {
     email,
     username,
     name,
     location,
+    avatarUrl: file?.path,
   };
   return User.findByIdAndUpdate(userId, data, { new: true });
 };

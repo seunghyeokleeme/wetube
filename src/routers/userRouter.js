@@ -15,7 +15,7 @@ import {
   startKakaoLogin,
   updatePassword,
 } from "../controllers/authController";
-import { privateOnly, publicOnly } from "../middlewares";
+import { privateOnly, publicOnly, uploadFiles } from "../middlewares";
 
 const userRouter = express.Router();
 
@@ -35,6 +35,6 @@ userRouter.get("/kakao/finish", publicOnly, finishKakaoLogin);
 userRouter
   .route("/:id([0-9a-f]{24})")
   .get(getProfile)
-  .patch(privateOnly, updateProfile);
+  .patch(privateOnly, uploadFiles.single("avatar"), updateProfile);
 
 export default userRouter;

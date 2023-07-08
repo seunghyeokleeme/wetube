@@ -55,6 +55,7 @@ export const updateProfile = async (req, res, next) => {
       user: { _id },
     },
     body: { email, username, name, location },
+    file,
   } = req;
   try {
     if (id !== _id) {
@@ -94,6 +95,7 @@ export const updateProfile = async (req, res, next) => {
       username,
       name,
       location,
+      file,
     });
     req.session.user = updatedUser.toSafeObject();
     return res.redirect("/users/edit");

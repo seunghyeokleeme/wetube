@@ -1,3 +1,4 @@
+import multer from "multer";
 import {
   ForbiddenError,
   NotFoundError,
@@ -58,3 +59,5 @@ export const publicOnly = (req, res, next) => {
   }
   next();
 };
+
+export const uploadFiles = multer({ dest: "uploads/" });
