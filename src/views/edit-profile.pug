@@ -2,7 +2,10 @@ extends base
 
 block content
     h4 프로필 수정
-    img(src="/"+loggedInUser.avatarUrl, with="100", height="100")
+    if(loggedInUser.avatarUrl.startsWith("upload"))
+        img(src="/"+loggedInUser.avatarUrl, with="100", height="100")
+    if(loggedInUser.avatarUrl.startsWith("http"))
+        img(src=loggedInUser.avatarUrl, with="100", height="100")
     form(action=`/users/${loggedInUser._id}?_method=PATCH`, method="POST", enctype="multipart/form-data")
         input(type="hidden" name="_method" value="PATCH")
         label(for="avatar") 프로필 이미지
