@@ -1,6 +1,7 @@
 extends base
 
 block content
+    video(src="/"+video.fileUrl, controls)
     div 
         span 조회수 #{video.meta.views}회
         span #{video.createdAt} 전

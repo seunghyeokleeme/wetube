@@ -1,10 +1,13 @@
-import { ForbiddenError, ValidationError } from "../errors";
+import { MulterError } from "multer";
+import { CustomMulterError, ForbiddenError, ValidationError } from "../errors";
+import { avatarUpload } from "../middlewares";
 import { UserService } from "../services";
 import {
   arePasswordsEqual,
   isValidProfileData,
   isValidSignupData,
 } from "../utils/validators";
+import { determineView } from "../utils/determineView";
 
 export const postUser = async (req, res, next) => {
   const { email, username, password, password2, name, location } = req.body;
@@ -48,6 +51,19 @@ export const getEdit = (req, res) => {
   res.render("edit-profile", { pageTitle: "프로필 수정" });
 };
 
+export const handleAvatarUpload = (req, res, next) => {
+  const view = determineView(req.originalUrl);
+
+  avatarUpload.single("avatar")(req, res, (error) => {
+    if (error instanceof MulterError) {
+      const customMulterError = new CustomMulterError(error, view);
+      next(customMulterError);
+    } else {
+      next(error);
+    }
+  });
+};
+
 export const updateProfile = async (req, res, next) => {
   const {
     params: { id },
@@ -55,6 +71,7 @@ export const updateProfile = async (req, res, next) => {
       user: { _id },
     },
     body: { email, username, name, location },
+    file,
   } = req;
   try {
     if (id !== _id) {
@@ -94,6 +111,7 @@ export const updateProfile = async (req, res, next) => {
       username,
       name,
       location,
+      file,
     });
     req.session.user = updatedUser.toSafeObject();
     return res.redirect("/users/edit");

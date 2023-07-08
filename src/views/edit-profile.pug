@@ -2,8 +2,14 @@ extends base
 
 block content
     h4 프로필 수정
-    form(action=`/users/${loggedInUser._id}?_method=PATCH`, method="POST")
+    if(loggedInUser.avatarUrl.startsWith("upload"))
+        img(src="/"+loggedInUser.avatarUrl, with="100", height="100")
+    if(loggedInUser.avatarUrl.startsWith("http"))
+        img(src=loggedInUser.avatarUrl, with="100", height="100")
+    form(action=`/users/${loggedInUser._id}?_method=PATCH`, method="POST", enctype="multipart/form-data")
         input(type="hidden" name="_method" value="PATCH")
+        label(for="avatar") 프로필 이미지
+        input(type="file", name="avatar", id="avatar", accept="image/*")
         input(type="email", placeholder="이메일 주소", name="email", required, value=loggedInUser.email)
         input(type="text", placeholder="아이디", name="username", required, maxlength=15, value=loggedInUser.username)
         input(type="text", name="name", placeholder="이름", value=loggedInUser.name)

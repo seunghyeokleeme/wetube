@@ -1,12 +1,13 @@
 import { ValidationError } from "../errors";
 
-export const isValidVideoData = (title, description, hashtags) => {
+export const isValidVideoData = (title, description, hashtags, file = null) => {
   if (
     typeof title !== "string" ||
     title.length > 80 ||
     typeof description !== "string" ||
     description.length > 140 ||
-    typeof hashtags !== "string"
+    typeof hashtags !== "string" ||
+    !file
   ) {
     return false;
   }

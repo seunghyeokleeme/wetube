@@ -2,6 +2,7 @@ import express from "express";
 import {
   getEdit,
   getProfile,
+  handleAvatarUpload,
   postUser,
   remove,
   updateProfile,
@@ -35,6 +36,6 @@ userRouter.get("/kakao/finish", publicOnly, finishKakaoLogin);
 userRouter
   .route("/:id([0-9a-f]{24})")
   .get(getProfile)
-  .patch(privateOnly, updateProfile);
+  .patch(privateOnly, handleAvatarUpload, updateProfile);
 
 export default userRouter;
