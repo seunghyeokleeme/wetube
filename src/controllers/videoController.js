@@ -1,6 +1,9 @@
-import { NotFoundError, ValidationError } from "../errors";
+import { MulterError } from "multer";
+import { CustomMulterError, NotFoundError, ValidationError } from "../errors";
+import { videoUpload } from "../middlewares";
 import { VideoService } from "../services";
 import { isValidVideoData } from "../utils/validators";
+import { determineView } from "../utils/determineView";
 
 export const home = async (req, res, next) => {
   try {
@@ -11,13 +14,34 @@ export const home = async (req, res, next) => {
   }
 };
 
+export const handleVideoUpload = (req, res, next) => {
+  const view = determineView(req.originalUrl);
+
+  videoUpload.single("video")(req, res, (error) => {
+    if (error instanceof MulterError) {
+      const customMulterError = new CustomMulterError(error, view);
+      next(customMulterError);
+    } else {
+      next(error);
+    }
+  });
+};
+
 export const postVideo = async (req, res, next) => {
-  const { title, description, hashtags } = req.body;
+  const {
+    body: { title, description, hashtags },
+    file,
+  } = req;
   try {
-    if (!isValidVideoData(title, description, hashtags)) {
+    if (!isValidVideoData(title, description, hashtags, file)) {
       throw new ValidationError("유효하지 않는 video 데이터입니다.", "upload");
     }
-    await VideoService.uploadVideo({ title, description, hashtags });
+    await VideoService.uploadVideo({
+      title,
+      description,
+      hashtags,
+      fileUrl: file.path,
+    });
     return res.redirect("/");
   } catch (error) {
     next(error);
@@ -46,9 +70,10 @@ export const updateVideo = async (req, res, next) => {
   const {
     params: { id },
     body: { title, description, hashtags },
+    file,
   } = req;
   try {
-    if (!isValidVideoData(title, description, hashtags)) {
+    if (!isValidVideoData(title, description, hashtags, file ?? true)) {
       throw new ValidationError("유효하지 않는 video 데이터입니다.");
     }
 
@@ -56,7 +81,7 @@ export const updateVideo = async (req, res, next) => {
     if (!video) {
       throw new NotFoundError("해당 비디오가 존재하지 않습니다.");
     }
-    await VideoService.updateVideo(id, { title, description, hashtags });
+    await VideoService.updateVideo(id, { title, description, hashtags, file });
     return res.redirect(`/videos/${id}`);
   } catch (error) {
     next(error);

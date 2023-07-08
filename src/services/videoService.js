@@ -7,9 +7,10 @@ export const findAll = () => {
 export const getPopularVideos = () => {};
 
 export const uploadVideo = (fields) => {
-  const { title, description, hashtags } = fields;
+  const { title, description, hashtags, fileUrl } = fields;
   // ToDo: data 중복코드 분리하기
   const data = {
+    fileUrl,
     title,
     description,
     hashtags: Video.parseHashtags(hashtags),
@@ -27,9 +28,10 @@ export const existsVideo = (condition, toBoolean = false) => {
 };
 
 export const updateVideo = (videoId, fields) => {
-  const { title, description, hashtags } = fields;
+  const { title, description, hashtags, file } = fields;
   // ToDo: data 중복코드 분리하기
   const data = {
+    fileUrl: file?.path,
     title,
     description,
     hashtags: Video.parseHashtags(hashtags),
