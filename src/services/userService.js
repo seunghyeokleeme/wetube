@@ -26,8 +26,8 @@ export const registerUser = (userDetails, socialOnly = false) => {
   return User.create(data);
 };
 
-export const existsUser = (condition, toBoolean = false) => {
-  const query = User.exists(condition);
+export const existsUser = (filter, toBoolean = true, options) => {
+  const query = User.exists(filter, options);
   return toBoolean ? query.then((user) => Boolean(user)) : query;
 };
 

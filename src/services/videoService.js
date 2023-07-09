@@ -20,8 +20,8 @@ export const getVideoById = (videoId) => {
   return Video.findById(videoId);
 };
 
-export const existsVideo = (condition, toBoolean = false) => {
-  const query = Video.exists(condition);
+export const existsVideo = (filter, toBoolean = true, options) => {
+  const query = Video.exists(filter, options);
   return toBoolean ? query.then((video) => Boolean(video)) : query;
 };
 
