@@ -1,6 +1,6 @@
 import { NotFoundError, ValidationError } from "../errors";
 import { videoUpload } from "../middlewares/uploads";
-import { UserService, VideoService } from "../services";
+import { VideoService } from "../services";
 import { isValidVideoData } from "../utils/validators";
 import { handleUpload } from "../utils/uploadHandler";
 
@@ -27,7 +27,7 @@ export const postVideo = async (req, res, next) => {
     if (!isValidVideoData(title, description, hashtags, file)) {
       throw new ValidationError("유효하지 않는 video 데이터입니다.", "upload");
     }
-    await VideoService.uploadVideo({
+    await VideoService.uploadVideo(_id, {
       title,
       description,
       hashtags,

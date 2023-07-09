@@ -1,6 +1,6 @@
 import { ForbiddenError, NotFoundError, ValidationError } from "../errors";
 import { avatarUpload } from "../middlewares/uploads";
-import { UserService, VideoService } from "../services";
+import { UserService } from "../services";
 import {
   arePasswordsEqual,
   isValidProfileData,
@@ -47,15 +47,13 @@ export const postUser = async (req, res, next) => {
 export const getProfile = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const user = await UserService.getUserById(id);
+    const user = await UserService.getUserById(id).populate("videos");
     if (!user) {
       throw new NotFoundError("요청한 유저를 찾을 수 없습니다.");
     }
-    const videos = await VideoService.findAllByOwner(user._id);
     return res.render("profile", {
       pageTitle: user.name,
       user: user.toSafeObject(),
-      videos,
     });
   } catch (error) {
     next(error);

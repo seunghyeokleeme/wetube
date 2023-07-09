@@ -1,3 +1,4 @@
+import { UserService } from ".";
 import Video from "../models/Video";
 import { makeVideoData } from "../utils/dataHandler";
 
@@ -5,15 +6,14 @@ export const findAll = () => {
   return Video.find({}).sort({ createdAt: "desc" });
 };
 
-export const findAllByOwner = (ownerId) => {
-  return Video.find({ owner: ownerId });
-};
-
 export const getPopularVideos = () => {};
 
-export const uploadVideo = (fields) => {
+export const uploadVideo = async (ownerId, fields) => {
   const data = makeVideoData(fields);
-  return Video.create(data);
+  const newVideo = await Video.create(data);
+  const user = await UserService.getUserById(ownerId);
+  user.videos.push(newVideo._id);
+  await user.save();
 };
 
 export const getVideoById = (videoId) => {
