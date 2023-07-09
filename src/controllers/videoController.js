@@ -1,6 +1,6 @@
 import { NotFoundError, ValidationError } from "../errors";
 import { videoUpload } from "../middlewares/uploads";
-import { VideoService } from "../services";
+import { UserService, VideoService } from "../services";
 import { isValidVideoData } from "../utils/validators";
 import { handleUpload } from "../utils/uploadHandler";
 
@@ -17,6 +17,9 @@ export const handleVideoUpload = handleUpload(videoUpload, "video");
 
 export const postVideo = async (req, res, next) => {
   const {
+    session: {
+      user: { _id },
+    },
     body: { title, description, hashtags },
     file,
   } = req;
@@ -28,6 +31,7 @@ export const postVideo = async (req, res, next) => {
       title,
       description,
       hashtags,
+      owner: _id,
       fileUrl: file.path,
     });
     return res.redirect("/");
@@ -43,12 +47,15 @@ export const getUpload = (req, res) => {
 export const getVideo = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const video = await VideoService.getVideoById(id);
+    const video = await VideoService.getVideoById(id).populate("owner");
     if (!video) {
       throw new NotFoundError("해당 비디오가 존재하지 않습니다.");
     }
-
-    return res.render("watch", { pageTitle: `Watching ${video.title}`, video });
+    video.owner = video.owner.toSafeObject();
+    return res.render("watch", {
+      pageTitle: `Watching ${video.title}`,
+      video,
+    });
   } catch (error) {
     next(error);
   }

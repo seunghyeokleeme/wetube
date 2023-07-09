@@ -2,6 +2,7 @@ extends base
 
 block content
     video(src="/"+video.fileUrl, controls)
+    a(href=`/users/${video.owner._id}`)=video.owner.name
     div 
         span 조회수 #{video.meta.views}회
         span #{video.createdAt} 전
@@ -9,8 +10,9 @@ block content
             each hashtag in video.hashtags
                 li=hashtag
     p=video.description
-    a(href=`/videos/${video.id}/edit`) Edit Video &rarr;
-    br
-    form(action=`/videos/${video.id}?_method=DELETE`, method="POST")
-        input(type="hidden" name="_method" value="DELETE")
-        button(type="submit") Delete
+    if String(video.owner._id) === String(loggedInUser._id)
+        a(href=`/videos/${video.id}/edit`) Edit Video &rarr;
+        br
+        form(action=`/videos/${video.id}?_method=DELETE`, method="POST")
+            input(type="hidden" name="_method" value="DELETE")
+            button(type="submit") Delete

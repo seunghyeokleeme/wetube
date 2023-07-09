@@ -5,6 +5,10 @@ export const findAll = () => {
   return Video.find({}).sort({ createdAt: "desc" });
 };
 
+export const findAllByOwner = (ownerId) => {
+  return Video.find({ owner: ownerId });
+};
+
 export const getPopularVideos = () => {};
 
 export const uploadVideo = (fields) => {
@@ -21,9 +25,8 @@ export const existsVideo = (condition, toBoolean = false) => {
   return toBoolean ? query.then((video) => Boolean(video)) : query;
 };
 
-export const updateVideo = (videoId, { file, ...fields }) => {
-  const fileUrl = file?.path;
-  const data = makeVideoData({ ...fields, fileUrl });
+export const updateVideo = (videoId, fields) => {
+  const data = makeVideoData(fields);
   return Video.findByIdAndUpdate(videoId, data);
 };
 
