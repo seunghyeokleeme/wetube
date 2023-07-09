@@ -16,6 +16,7 @@ const videoSchema = new mongoose.Schema({
     views: { type: Number, default: 0 },
     likes: { type: Number, default: 0 },
   },
+  owner: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },
 });
 
 videoSchema.static("parseHashtags", function (hashtags) {

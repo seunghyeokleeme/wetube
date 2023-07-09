@@ -21,10 +21,9 @@ export const postUser = async (req, res, next) => {
     if (!arePasswordsEqual(password, password2)) {
       throw new ValidationError("비밀번호가 일치하지 않습니다.", "join");
     }
-    const user = await UserService.existsUser(
-      { $or: [{ username }, { email }] },
-      true
-    );
+    const user = await UserService.existsUser({
+      $or: [{ username }, { email }],
+    });
     if (user) {
       throw new ValidationError(
         "이미 존재하는 유저 이름 또는 이메일입니다.",
@@ -47,7 +46,7 @@ export const postUser = async (req, res, next) => {
 export const getProfile = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const user = await UserService.getUserById(id);
+    const user = await UserService.getUserById(id).populate("videos");
     if (!user) {
       throw new NotFoundError("요청한 유저를 찾을 수 없습니다.");
     }
@@ -76,7 +75,7 @@ export const updateProfile = async (req, res, next) => {
     file,
   } = req;
   try {
-    if (id !== _id) {
+    if (String(id) !== String(_id)) {
       throw new ForbiddenError("해당 권한이 없습니다.", "edit-profile");
     }
 
@@ -87,12 +86,9 @@ export const updateProfile = async (req, res, next) => {
       );
     }
 
-    let user = await UserService.existsUser(
-      {
-        $and: [{ _id: { $ne: _id } }, { $or: [{ username }, { email }] }],
-      },
-      true
-    );
+    let user = await UserService.existsUser({
+      $and: [{ _id: { $ne: _id } }, { $or: [{ username }, { email }] }],
+    });
     if (user) {
       throw new ValidationError(
         "이미 존재하는 유저 이름 또는 이메일입니다.",

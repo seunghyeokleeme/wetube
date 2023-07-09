@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: false, trim: true },
   name: { type: String, required: true, default: "홍길동", trim: true },
   location: { type: String, required: true, default: "지구", trim: true },
+  videos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Video" }],
 });
 
 userSchema.methods.toSafeObject = function () {
@@ -31,7 +32,9 @@ userSchema.pre("validate", function (next) {
 });
 
 userSchema.pre("save", async function () {
-  this.password = await bcrypt.hash(this.password, 5);
+  if (this.isModified("password")) {
+    this.password = await bcrypt.hash(this.password, 5);
+  }
 });
 
 const User = mongoose.model("User", userSchema);
