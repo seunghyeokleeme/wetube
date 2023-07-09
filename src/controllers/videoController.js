@@ -1,8 +1,9 @@
-import { NotFoundError, ValidationError } from "../errors";
+import { ForbiddenError, NotFoundError, ValidationError } from "../errors";
 import { videoUpload } from "../middlewares/uploads";
 import { VideoService } from "../services";
 import { isValidVideoData } from "../utils/validators";
 import { handleUpload } from "../utils/uploadHandler";
+import Video from "../models/Video";
 
 export const home = async (req, res, next) => {
   try {
@@ -64,6 +65,9 @@ export const getVideo = async (req, res, next) => {
 export const updateVideo = async (req, res, next) => {
   const {
     params: { id },
+    session: {
+      user: { _id },
+    },
     body: { title, description, hashtags },
     file,
   } = req;
@@ -71,10 +75,17 @@ export const updateVideo = async (req, res, next) => {
     if (!isValidVideoData(title, description, hashtags, file ?? true)) {
       throw new ValidationError("유효하지 않는 video 데이터입니다.");
     }
+    // VideoService.getVideoById(id)
+    const video = await VideoService.existsVideo({ _id: id }, false, {
+      lean: true,
+      select: "owner",
+    });
 
-    const video = await VideoService.existsVideo({ _id: id }, true);
     if (!video) {
       throw new NotFoundError("해당 비디오가 존재하지 않습니다.");
+    }
+    if (String(video.owner) !== String(_id)) {
+      throw new ForbiddenError("해당 권한이 없습니다.");
     }
     await VideoService.updateVideo(id, { title, description, hashtags, file });
     return res.redirect(`/videos/${id}`);
@@ -84,11 +95,22 @@ export const updateVideo = async (req, res, next) => {
 };
 
 export const removeVideo = async (req, res, next) => {
-  const { id } = req.params;
+  const {
+    params: { id },
+    session: {
+      user: { _id },
+    },
+  } = req;
   try {
-    const video = await VideoService.existsVideo({ _id: id }, true);
+    const video = await VideoService.existsVideo({ _id: id }, false, {
+      lean: true,
+      select: "owner",
+    });
     if (!video) {
       throw new NotFoundError("해당 비디오가 존재하지 않습니다.");
+    }
+    if (String(video.owner) !== String(_id)) {
+      throw new ForbiddenError("해당 권한이 없습니다.");
     }
     await VideoService.deleteVideo(id);
     return res.redirect("/");
@@ -98,11 +120,19 @@ export const removeVideo = async (req, res, next) => {
 };
 
 export const getEdit = async (req, res, next) => {
-  const { id } = req.params;
+  const {
+    params: { id },
+    session: {
+      user: { _id },
+    },
+  } = req;
   try {
     const video = await VideoService.getVideoById(id);
     if (!video) {
       throw new NotFoundError("해당 비디오가 존재하지 않습니다.");
+    }
+    if (String(video.owner) !== String(_id)) {
+      throw new ForbiddenError("해당 권한이 없습니다.");
     }
     return res.render("edit", { pageTitle: `수정 중 ${video.title}`, video });
   } catch (error) {
