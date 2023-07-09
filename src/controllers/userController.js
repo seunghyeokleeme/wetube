@@ -1,4 +1,4 @@
-import { ForbiddenError, ValidationError } from "../errors";
+import { ForbiddenError, NotFoundError, ValidationError } from "../errors";
 import { avatarUpload } from "../middlewares/uploads";
 import { UserService } from "../services";
 import {
@@ -44,7 +44,21 @@ export const postUser = async (req, res, next) => {
   }
 };
 
-export const getProfile = (req, res) => res.send("00 회원 정보 페이지입니다.");
+export const getProfile = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const user = await UserService.getUserById(id);
+    if (!user) {
+      throw new NotFoundError("요청한 유저를 찾을 수 없습니다.");
+    }
+    return res.render("profile", {
+      pageTitle: user.name,
+      user: user.toSafeObject(),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const getEdit = (req, res) => {
   res.render("edit-profile", { pageTitle: "프로필 수정" });
@@ -87,6 +101,10 @@ export const updateProfile = async (req, res, next) => {
     }
 
     user = await UserService.getUserById(_id);
+    if (!user) {
+      throw new NotFoundError("요청한 유저를 찾을 수 없습니다.");
+    }
+
     if (user.socialOnly && user.email !== email) {
       throw new ValidationError(
         "SNS 로그인으로 가입한 유저는 이메일을 수정할 수 없습니다!",
