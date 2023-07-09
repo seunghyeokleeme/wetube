@@ -102,6 +102,9 @@ export const loginUser = async (user, password) => {
 
 export const changePassword = async (userId, oldPassword, newPassword) => {
   const user = await UserService.getUserById(userId);
+  if (!user) {
+    throw new NotFoundError("요청한 유저를 찾을 수 없습니다.");
+  }
   await verifyPassword(oldPassword, user.password, "change-password");
   user.password = newPassword;
   await user.save();
