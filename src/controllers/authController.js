@@ -32,7 +32,6 @@ export const postLogin = async (req, res, next) => {
     await AuthService.loginUser(user, password);
     req.session.loggedIn = true;
     req.session.user = user.toSafeObject();
-    // Cookie 작업
     return res.redirect("/");
   } catch (error) {
     next(error);

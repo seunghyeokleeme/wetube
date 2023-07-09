@@ -75,7 +75,6 @@ export const updateVideo = async (req, res, next) => {
     if (!isValidVideoData(title, description, hashtags, file ?? true)) {
       throw new ValidationError("유효하지 않는 video 데이터입니다.");
     }
-    // VideoService.getVideoById(id)
     const video = await VideoService.existsVideo({ _id: id }, false, {
       lean: true,
       select: "owner",
